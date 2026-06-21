@@ -81,6 +81,7 @@ const fragmentShader = /* glsl */ `
   uniform float uCh02Progress;
   uniform float uCh04Progress;
   uniform float uCh04Peak;
+  uniform float uCh05Progress;
   uniform float uTime;
   varying vec2 vWorldXZ;
 
@@ -106,10 +107,12 @@ const fragmentShader = /* glsl */ `
     float glowOut = exp(-(dist - scanOut) * (dist - scanOut) * 1.8) * 0.45;
     float scanIn  = 8.5 - mod(uTime * 0.14, 8.5);
     float glowIn  = exp(-(dist - scanIn)  * (dist - scanIn)  * 2.5) * 0.28;
-    col += signal * (glowOut + glowIn) * uCh04Progress * (1.0 + uCh04Peak * 0.9);
+    // CH05: active scanning calms into a steady operating hum as the system locks
+    col += signal * (glowOut + glowIn) * uCh04Progress * (1.0 + uCh04Peak * 0.9) * (1.0 - uCh05Progress * 0.35);
 
     // CH04: ghost floor rises as AI processes more of the maritime world (0.04 → 0.12)
-    float crowdFloor = 0.04 + uCh04Progress * 0.08;
+    // CH05: floor lifts further so the whole unified field reads as one legible system
+    float crowdFloor = 0.04 + uCh04Progress * 0.08 + uCh05Progress * 0.06;
     float crowdFade = clamp(1.0 - smoothstep(0.0, 0.28, uCh02Progress), crowdFloor, 1.0);
 
     gl_FragColor = vec4(col, alpha * fog * (0.42 + t * 0.52) * crowdFade);
@@ -186,6 +189,7 @@ export default function Stage() {
         uCh02Progress: { value: 0 },
         uCh04Progress: { value: 0 },
         uCh04Peak:     { value: 0 },
+        uCh05Progress: { value: 0 },
       },
       transparent: true,
       depthWrite: false,
@@ -295,6 +299,14 @@ export default function Stage() {
     const scanArc = new THREE.Line(scanArcGeo, scanArcMat)
     scene.add(scanArc)
 
+    // ── CH05: system boundary — two concentric rings that seal around the unified
+    // field. sysRing1 *draws closed* as CH05 progresses (the perimeter completing =
+    // system lock); sysRing2 fades in after as the outer shell. Both idle-rotate slowly.
+    const sysRing1 = makeRing(4.4)
+    const sysRing2 = makeRing(5.3)
+    sysRing1.geometry.setDrawRange(0, 0)
+    scene.add(sysRing1); scene.add(sysRing2)
+
     // ── RAF loop (THREE.Timer replaces deprecated THREE.Clock in r184+)
     const timer = new THREE.Timer()
     let rafId: number
@@ -309,15 +321,22 @@ export default function Stage() {
       const ch02p     = scrollStore.ch02Progress
       const ch03p     = scrollStore.ch03Progress
       const ch04p     = scrollStore.ch04Progress
+      const ch05p     = scrollStore.ch05Progress
       // Peak activation — bell over mid/end of CH04 (same curve as page.tsx DOM layer).
       // The intelligence layer briefly reaches full processing state, then settles.
       const ch04peak  = Math.sin(Math.max(0, Math.min(1, (ch04p - 0.40) / 0.50)) * Math.PI)
+      // CH05 unification: smooth ramp + a calm "system lock" bell (~0.6) — the moment
+      // everything aligns. Calmer and more inevitable than CH04's active peak.
+      const sm05      = (x: number) => { const c = Math.max(0, Math.min(1, x)); return c * c * (3 - 2 * c) }
+      const ch05in    = sm05(ch05p)
+      const ch05lock  = Math.sin(Math.max(0, Math.min(1, (ch05p - 0.25) / 0.45)) * Math.PI)
 
       vesselMat.uniforms.uTime.value         = elapsed
       vesselMat.uniforms.uProgress.value     = progress
       vesselMat.uniforms.uCh02Progress.value = ch02p
       vesselMat.uniforms.uCh04Progress.value = ch04p
       vesselMat.uniforms.uCh04Peak.value     = ch04peak
+      vesselMat.uniforms.uCh05Progress.value = ch05p
 
       // CH01: route lines draw in, fade through CH02, ghost back in CH03.
       // CH04: AI actively recalculates — routes bend between fixed ports, and
@@ -349,7 +368,8 @@ export default function Stage() {
         if (aiActive) {
           // Two low-frequency bend layers per line, each at its own rate/phase →
           // routes feel re-optimised, not jittered. sin(u·π) window pins both ports.
-          const amp = 0.24 * ch04p * (1 + ch04peak * 0.45)
+          // CH05: bending settles to zero — routes lock into clean, final geometry
+          const amp = 0.24 * ch04p * (1 + ch04peak * 0.45) * (1 - ch05in)
           const ph  = elapsed * (0.13 + li * 0.017)
           for (let i = 0; i < vCount; i++) {
             const u   = i / (vCount - 1)
@@ -365,7 +385,7 @@ export default function Stage() {
             const d  = Math.hypot(bx, bz)
             const go = Math.exp(-(d - scanOut) * (d - scanOut) * 1.8) * 0.45
             const gi = Math.exp(-(d - scanIn)  * (d - scanIn)  * 2.5) * 0.28
-            const c  = 1 + (go + gi) * ch04p * (1.6 + ch04peak * 0.9)
+            const c  = 1 + (go + gi) * ch04p * (1.6 + ch04peak * 0.9) * (1 - ch05in * 0.4)
             colA.setXYZ(i, c, c, c)
           }
           posA.needsUpdate = true
@@ -387,7 +407,8 @@ export default function Stage() {
       const pulseHz   = 1.6 * (1 - ch03p * 0.52)
       const pulseAmp  = 0.06 - ch03p * 0.03
       const heroPulse = Math.sin(elapsed * pulseHz) * pulseAmp + (1 - pulseAmp)
-      heroMat.opacity = Math.min(1, ch02p * 5) * heroPulse
+      // CH05: core settles to a calm halo so the Anchor Point name reads from its centre
+      heroMat.opacity = Math.min(1, ch02p * 5) * heroPulse * (1 - ch05in * 0.30)
       heroMat.size    = 90 + ch02p * 60 + Math.sin(elapsed * 0.8) * 4 * ch04p
       heroMat.needsUpdate = true
 
@@ -416,9 +437,27 @@ export default function Stage() {
         ;(ring.material as THREE.LineBasicMaterial).opacity = fade * ch04p * (0.24 + ch04peak * 0.12)
       })
 
-      // CH04: scanner arc orbits hero vessel — active inference loop (faster sweep at peak)
-      scanArcMat.opacity = ch04p * (0.52 + Math.sin(elapsed * 1.9) * 0.14) * (1 + ch04peak * 0.35)
+      // CH04: scanner arc orbits hero vessel — active inference loop (faster sweep at peak).
+      // CH05: the active inference loop calms as the system locks into operation.
+      scanArcMat.opacity = ch04p * (0.52 + Math.sin(elapsed * 1.9) * 0.14) * (1 + ch04peak * 0.35) * (1 - ch05in * 0.6)
       scanArc.rotation.y = elapsed * (0.90 + ch04peak * 0.45)
+
+      // ── CH05: system boundary seals around the unified field (completes ~0.42,
+      // as the modules connect and the lock peaks — then holds for the final frame)
+      const sealT = sm05((ch05p - 0.08) / 0.34)
+      const sysBreath = 1 + Math.sin(elapsed * 0.5) * 0.012 * ch05in   // soft OS idle breath
+      sysRing1.geometry.setDrawRange(0, Math.max(2, Math.floor(81 * sealT)))
+      sysRing1.rotation.y = elapsed * 0.035
+      sysRing1.scale.setScalar(sysBreath)
+      ;(sysRing1.material as THREE.LineBasicMaterial).opacity = ch05in * (0.20 + ch05lock * 0.26)
+      sysRing2.rotation.y = -elapsed * 0.028
+      sysRing2.scale.setScalar(sysBreath)
+      ;(sysRing2.material as THREE.LineBasicMaterial).opacity =
+        sm05((ch05p - 0.32) / 0.33) * (0.12 + ch05lock * 0.18)
+
+      // ── CH05: camera eases back — step out to see the whole platform as one system
+      camera.position.set(0, 14 + ch05in * 3.0, 7 + ch05in * 1.4)
+      camera.lookAt(0, 0, 0)
 
       renderer.render(scene, camera)
     }
@@ -444,7 +483,7 @@ export default function Stage() {
         ;(l.material as THREE.LineBasicMaterial).dispose()
       })
       heroGeo.dispose(); heroMat.dispose(); heroTex.dispose()
-      ;[ring1, ring2, ...sonarRings].forEach((r) => {
+      ;[ring1, ring2, ...sonarRings, sysRing1, sysRing2].forEach((r) => {
         r.geometry.dispose()
         ;(r.material as THREE.LineBasicMaterial).dispose()
       })

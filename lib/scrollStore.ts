@@ -4,6 +4,7 @@ let _progress = 0
 let _ch02Progress = 0
 let _ch03Progress = 0
 let _ch04Progress = 0
+let _ch05Progress = 0
 
 export const scrollStore = {
   get progress() { return _progress },
@@ -17,4 +18,7 @@ export const scrollStore = {
 
   get ch04Progress() { return _ch04Progress },
   set ch04Progress(v: number) { _ch04Progress = v },
+
+  get ch05Progress() { return _ch05Progress },
+  set ch05Progress(v: number) { _ch05Progress = v },
 }

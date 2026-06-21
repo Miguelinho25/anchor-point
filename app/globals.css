@@ -656,3 +656,218 @@ body {
   text-transform: uppercase;
   color: rgba(24, 224, 255, 0.38);
 }
+
+/* ─── CH05: Anchor Point — Operating System Reveal ────────────────────────── */
+
+.scroll-film-ch05 { position: relative; height: 300vh; }
+
+.ch05-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Two product layers docked into one framework — sit high, clear of the wordmark */
+.ch05-modules {
+  position: absolute;
+  top: 16%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.4vw, 26px);
+  z-index: 12;
+}
+
+.ch05-module {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  will-change: opacity, transform, filter;
+}
+.mod-av { align-items: flex-end; text-align: right; }
+.mod-ai { align-items: flex-start; text-align: left; }
+
+.ch05-mod-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 10px rgba(24, 224, 255, 0.6);
+  margin-bottom: 4px;
+  animation: ai-dot-pulse 2.6s ease-in-out infinite alternate;
+}
+.mod-ai .ch05-mod-dot { animation-delay: 1.3s; }
+
+.ch05-mod-name {
+  font-size: clamp(0.85rem, min(1.5vw, 2.2vh), 1.15rem);
+  font-weight: 200;
+  letter-spacing: 0.14em;
+  color: rgba(243, 248, 251, 0.88);
+}
+
+.ch05-mod-layer {
+  font-size: 0.5rem;
+  font-weight: 300;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.52);
+}
+
+/* Connector — the two layers link into one system */
+.ch05-link {
+  width: clamp(64px, 9vw, 130px);
+  height: 1px;
+  background: linear-gradient(to right,
+    rgba(24, 224, 255, 0),
+    rgba(24, 224, 255, 0.5),
+    rgba(24, 224, 255, 0));
+  position: relative;
+  transform-origin: center;
+  will-change: opacity, transform, filter;
+}
+.ch05-link::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--signal);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px rgba(24, 224, 255, 0.7);
+}
+
+/* Faint locked nodes — expansion potential, nothing claimed */
+.ch05-future {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 11;
+  will-change: opacity;
+}
+.ch05-fut-l { left: 17%; top: 75%; }
+.ch05-fut-r { right: 17%; top: 75%; }
+
+.ch05-fut-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(24, 224, 255, 0.45);
+  background: transparent;
+}
+
+.ch05-fut-label {
+  font-size: 0.42rem;
+  font-weight: 300;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(90, 134, 166, 0.8);
+}
+
+/* Soft radial scrim — keeps the wordmark legible where route lines pass behind it.
+   Sits above the WebGL canvas (z0) but below the reveal text (z12). */
+.ch05-scrim {
+  position: absolute;
+  top: 51%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(1120px, 88vw);
+  height: min(460px, 56vh);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center,
+    rgba(4, 18, 26, 0.55) 0%,
+    rgba(4, 18, 26, 0.34) 40%,
+    rgba(4, 18, 26, 0) 72%);
+  z-index: 11;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* Parent system reveal — centred, over the calmed core */
+.ch05-reveal {
+  position: absolute;
+  top: 51%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(16px, 3vh, 28px);
+  width: 92%;
+  z-index: 12;
+}
+
+.ch05-eyebrow {
+  font-size: 0.55rem;
+  font-weight: 300;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.6);
+  will-change: opacity;
+}
+
+.ch05-wordmark {
+  /* Dominant but elegant — capped by viewport height so it never crowds the modules */
+  font-size: clamp(2.4rem, min(7vw, 12vh), 5rem);
+  font-weight: 100;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-shadow:
+    0 0 64px rgba(24, 224, 255, 0.26),
+    0 0 22px rgba(24, 224, 255, 0.14);
+  will-change: opacity, transform, filter;
+}
+
+.ch05-tagline {
+  font-size: clamp(0.72rem, 1.1vw, 0.95rem);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: var(--ice);
+  will-change: opacity;
+}
+
+/* Quiet operating status */
+.ch05-status {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.5rem;
+  font-weight: 300;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.42);
+  white-space: nowrap;
+  z-index: 12;
+  will-change: opacity;
+}
+
+.ch05-status-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--signal);
+  animation: ai-dot-pulse 2s ease-in-out infinite alternate;
+}
+
+/* Short desktop viewports — extra safety so nothing crowds */
+@media (max-height: 720px) {
+  .ch05-modules { top: 12%; gap: 16px; }
+  .ch05-reveal  { gap: 14px; }
+  .ch05-future  { top: 80%; }
+  .ch05-status  { bottom: 5.5%; }
+}

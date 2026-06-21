@@ -30,13 +30,15 @@ export default function Home() {
   const film02Ref = useRef<HTMLDivElement>(null)
   const film03Ref = useRef<HTMLDivElement>(null)
   const film04Ref = useRef<HTMLDivElement>(null)
+  const film05Ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const film   = filmRef.current
     const film02 = film02Ref.current
     const film03 = film03Ref.current
     const film04 = film04Ref.current
-    if (!film || !film02 || !film03 || !film04) return
+    const film05 = film05Ref.current
+    if (!film || !film02 || !film03 || !film04 || !film05) return
 
     // Grab elements via ref so there's no global selector ambiguity
     const chars    = Array.from(film.querySelectorAll<HTMLElement>('.ch01-title .char'))
@@ -330,15 +332,120 @@ export default function Home() {
       },
     })
 
+    // ── CH05: Anchor Point — the operating system reveal
+    // AnchorVoyage + Anchor AI dock into one framework, then the parent system is named.
+    const ch05modAV   = film05.querySelector<HTMLElement>('.mod-av')
+    const ch05modAI   = film05.querySelector<HTMLElement>('.mod-ai')
+    const ch05link    = film05.querySelector<HTMLElement>('.ch05-link')
+    const ch05futL    = film05.querySelector<HTMLElement>('.ch05-fut-l')
+    const ch05futR    = film05.querySelector<HTMLElement>('.ch05-fut-r')
+    const ch05eyebrow = film05.querySelector<HTMLElement>('.ch05-eyebrow')
+    const ch05word    = film05.querySelector<HTMLElement>('.ch05-wordmark')
+    const ch05tag     = film05.querySelector<HTMLElement>('.ch05-tagline')
+    const ch05status  = film05.querySelector<HTMLElement>('.ch05-status')
+    const ch05scrim   = film05.querySelector<HTMLElement>('.ch05-scrim')
+
+    if (ch05modAV)   { ch05modAV.style.opacity = '0';   ch05modAV.style.transform = 'translateX(-40px)' }
+    if (ch05modAI)   { ch05modAI.style.opacity = '0';   ch05modAI.style.transform = 'translateX(40px)' }
+    if (ch05link)    { ch05link.style.opacity = '0';    ch05link.style.transform = 'scaleX(0)' }
+    if (ch05futL)    { ch05futL.style.opacity = '0' }
+    if (ch05futR)    { ch05futR.style.opacity = '0' }
+    if (ch05eyebrow) { ch05eyebrow.style.opacity = '0' }
+    if (ch05word)    { ch05word.style.opacity = '0'; ch05word.style.transform = 'translateY(14px)'; ch05word.style.filter = 'blur(8px)' }
+    if (ch05tag)     { ch05tag.style.opacity = '0' }
+    if (ch05status)  { ch05status.style.opacity = '0' }
+    if (ch05scrim)   { ch05scrim.style.opacity = '0' }
+
+    const ch05Master = ScrollTrigger.create({
+      trigger: film05,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 2.5,
+      onUpdate(self) {
+        const p = self.progress
+        scrollStore.ch05Progress = p
+
+        // System-lock bell (~0.5) — shared with Stage.tsx. Calm, inevitable alignment,
+        // peaking as the boundary seals and the modules connect, just before the name.
+        const lock = Math.sin(Math.max(0, Math.min(1, (p - 0.25) / 0.45)) * Math.PI)
+        const lockBright = (1 + lock * 0.30).toFixed(3)
+
+        // 1 — Modules dock inward: the two layers converge into one framework
+        if (ch05modAV) {
+          const t = sm((p - 0.06) / 0.24)
+          ch05modAV.style.opacity = String(t * 0.90)
+          ch05modAV.style.transform = `translateX(${-40 * (1 - t)}px)`
+          ch05modAV.style.filter = `brightness(${lockBright})`
+        }
+        if (ch05modAI) {
+          const t = sm((p - 0.12) / 0.24)
+          ch05modAI.style.opacity = String(t * 0.90)
+          ch05modAI.style.transform = `translateX(${40 * (1 - t)}px)`
+          ch05modAI.style.filter = `brightness(${lockBright})`
+        }
+        // 2 — Connector draws between them once docked (boundary seals in WebGL here)
+        if (ch05link) {
+          const t = sm((p - 0.26) / 0.16)
+          ch05link.style.opacity = String(t * 0.7)
+          ch05link.style.transform = `scaleX(${t})`
+          ch05link.style.filter = `brightness(${lockBright})`
+        }
+        // Faint locked nodes — expansion potential, never named
+        if (ch05futL) ch05futL.style.opacity = String(sm((p - 0.34) / 0.20) * 0.22)
+        if (ch05futR) ch05futR.style.opacity = String(sm((p - 0.40) / 0.20) * 0.22)
+
+        // 3 — Eyebrow, then 4 — ANCHOR POINT resolves: only after unification is earned.
+        // Scrim arrives just ahead of the letters so they read cleanly over the routes.
+        if (ch05scrim) {
+          const t = sm((p - 0.44) / 0.20)
+          ch05scrim.style.opacity = String(t)
+        }
+        if (ch05eyebrow) {
+          const t = sm((p - 0.40) / 0.12)
+          ch05eyebrow.style.opacity = String(t * 0.55)
+        }
+        if (ch05word) {
+          const t = sm((p - 0.48) / 0.22)
+          ch05word.style.opacity = String(t * 0.96)
+          ch05word.style.transform = `translateY(${14 * (1 - t)}px)`
+          ch05word.style.filter = `blur(${8 * (1 - t)}px)`
+        }
+        // 5 — Tagline, 6 — Status. All settled by ~0.84, leaving a held final frame.
+        if (ch05tag) {
+          const t = sm((p - 0.64) / 0.12)
+          ch05tag.style.opacity = String(t * 0.62)
+        }
+        if (ch05status) {
+          const t = sm((p - 0.72) / 0.12)
+          ch05status.style.opacity = String(t * (0.62 + lock * 0.15))
+        }
+      },
+    })
+
     // Force Lenis + GSAP to recalculate scroll limit and all trigger positions
     window.dispatchEvent(new Event('resize'))
     ScrollTrigger.refresh()
 
+    // Re-register the full multi-section height after first paint. The synchronous
+    // refresh above can run before sticky layout settles, leaving Lenis capping the
+    // scroll limit at a stale height (the new last section becomes unreachable).
+    const rafRefresh = requestAnimationFrame(() => {
+      window.dispatchEvent(new Event('resize'))
+      ScrollTrigger.refresh()
+    })
+    const lateRefresh = window.setTimeout(() => {
+      window.dispatchEvent(new Event('resize'))
+      ScrollTrigger.refresh()
+    }, 600)
+
     return () => {
+      cancelAnimationFrame(rafRefresh)
+      clearTimeout(lateRefresh)
       master.kill()
       ch02Master.kill()
       ch03Master.kill()
       ch04Master.kill()
+      ch05Master.kill()
       gsap.ticker.remove(driftTick)
       ScrollTrigger.getAll().forEach((t) => t.kill())
     }
@@ -573,6 +680,54 @@ export default function Home() {
         <div className="ai-footer-bar">
           <span className="ai-active-pill"><span className="ai-pill-dot" />Active</span>
           <span className="ai-footer-text">Maritime Intelligence Field Processing</span>
+        </div>
+
+      </div>
+    </div>
+
+    {/* CH05 - Anchor Point — the operating system reveal */}
+    <div ref={film05Ref} className="scroll-film-ch05" style={{ position: 'relative', height: '300vh' }}>
+      <div className="ch05-stage">
+
+        {/* Two layers dock into one framework */}
+        <div className="ch05-modules">
+          <div className="ch05-module mod-av">
+            <span className="ch05-mod-dot" />
+            <div className="ch05-mod-name">AnchorVoyage</div>
+            <div className="ch05-mod-layer">Operational Layer</div>
+          </div>
+          <div className="ch05-link" />
+          <div className="ch05-module mod-ai">
+            <span className="ch05-mod-dot" />
+            <div className="ch05-mod-name">Anchor AI</div>
+            <div className="ch05-mod-layer">Intelligence Layer</div>
+          </div>
+        </div>
+
+        {/* Faint locked nodes — room to expand, nothing claimed */}
+        <div className="ch05-future ch05-fut-l">
+          <span className="ch05-fut-dot" />
+          <span className="ch05-fut-label">Locked</span>
+        </div>
+        <div className="ch05-future ch05-fut-r">
+          <span className="ch05-fut-dot" />
+          <span className="ch05-fut-label">Locked</span>
+        </div>
+
+        {/* Soft scrim — lifts the wordmark off the route lines passing behind it */}
+        <div className="ch05-scrim" />
+
+        {/* Parent system — revealed only after the unification is felt */}
+        <div className="ch05-reveal">
+          <div className="ch05-eyebrow">One unified system</div>
+          <div className="ch05-wordmark">Anchor Point</div>
+          <div className="ch05-tagline">The operating system for maritime intelligence.</div>
+        </div>
+
+        {/* Quiet operating status */}
+        <div className="ch05-status">
+          <span className="ch05-status-dot" />
+          <span>System unified · Online</span>
         </div>
 
       </div>
