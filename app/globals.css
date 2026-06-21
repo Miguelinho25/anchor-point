@@ -1,26 +1,658 @@
 @import "tailwindcss";
 
+/* ─── Design tokens ──────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colour ladder — monochrome "instrument blue" derived from maritime bridge consoles */
+  --abyss:  #04121A;  /* near-black teal — canvas bg */
+  --deep:   #0A2A3A;  /* panels, depth */
+  --steel:  #2D628C;  /* primary structure */
+  --haze:   #5A86A6;  /* mid atmosphere, labels */
+  --ice:    #BFD6E6;  /* dim text, data */
+  --white:  #F3F8FB;  /* headlines */
+  --signal: #18E0FF;  /* THE accent — radar/sonar cyan. One use: live intelligence */
+
+  /* Type scale — rem, art-directed per breakpoint (no fluid clamp) */
+  --text-xs:   0.625rem;
+  --text-sm:   0.75rem;
+  --text-base: 1rem;
+  --text-md:   1.25rem;
+  --text-lg:   1.5rem;
+  --text-xl:   2rem;
+  --text-2xl:  3rem;
+  --text-3xl:  4.5rem;
+  --text-hero: 6rem;
+
+  /* Spacing base-8 */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-6: 3rem;
+  --space-8: 4rem;
+  --space-12: 6rem;
+  --space-16: 8rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  /* Subtle radial lift at center — the scene has depth, not a flat backdrop */
+  background: radial-gradient(ellipse 90% 55% at 50% 55%, #0d2535 0%, var(--abyss) 65%);
+  color: var(--white);
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent scroll bounce that fights Lenis */
+  overscroll-behavior: none;
+}
+
+/* ─── Typography ─────────────────────────────────────────────────────────── */
+.t-hero {
+  font-size: var(--text-3xl);
+  font-weight: 100;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  color: var(--white);
+}
+
+.t-lead {
+  font-size: var(--text-xl);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+  color: var(--white);
+}
+
+.t-sub {
+  font-size: var(--text-md);
+  font-weight: 300;
+  color: var(--ice);
+  line-height: 1.5;
+}
+
+.t-label {
+  font-size: var(--text-sm);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--haze);
+}
+
+.t-cta {
+  font-size: var(--text-sm);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: var(--haze);
+}
+
+/* ─── Atmospheric fog overlay ────────────────────────────────────────────── */
+.stage-fog {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(to bottom,
+      rgba(4, 18, 26, 0.78) 0%,
+      rgba(4, 18, 26, 0.0) 20%,
+      rgba(4, 18, 26, 0.0) 74%,
+      rgba(4, 18, 26, 0.6) 100%),
+    radial-gradient(ellipse 95% 70% at 50% 50%,
+      transparent 32%,
+      rgba(4, 18, 26, 0.42) 100%);
+}
+
+/* ─── Scroll film container ──────────────────────────────────────────────── */
+.scroll-film {
+  position: relative;
+  height: 300vh;
+}
+
+.sticky-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ─── CH00 text ──────────────────────────────────────────────────────────── */
+.ch00-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 var(--space-4);
+  gap: var(--space-3);
+  z-index: 10;
+}
+
+.ch00-lead {
+  font-size: clamp(1.5rem, 3vw, var(--text-2xl));
+  font-weight: 200;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--white);
+  max-width: 28ch;
+}
+
+.ch00-secondary {
+  font-size: clamp(1rem, 1.8vw, var(--text-lg));
+  font-weight: 300;
+  color: var(--ice);
+  max-width: 32ch;
+}
+
+.ch00-scroll-hint {
+  position: absolute;
+  bottom: var(--space-8);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--haze);
+  animation: pulse-hint 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse-hint {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
+
+/* ─── CH01 text ──────────────────────────────────────────────────────────── */
+.ch01-content {
+  position: absolute;
+  bottom: var(--space-12);
+  left: var(--space-12);
+  z-index: 10;
+}
+
+.ch01-title {
+  font-size: clamp(3rem, 6vw, var(--text-hero));
+  font-weight: 100;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--white);
+  overflow: hidden;
+}
+
+.ch01-title .char {
+  display: inline-block;
+}
+
+.ch01-divider {
+  width: 2px;
+  height: 2px;
+  background: var(--signal);
+  border-radius: 50%;
+  margin: var(--space-3) 0;
+  box-shadow: 0 0 8px var(--signal);
+}
+
+.ch01-sub {
+  font-size: clamp(0.875rem, 1.4vw, var(--text-md));
+  font-weight: 300;
+  color: var(--signal);
+  letter-spacing: 0.04em;
+  max-width: 40ch;
+}
+
+/* ─── Hairline rule ──────────────────────────────────────────────────────── */
+.rule {
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.12;
+}
+
+/* ─── CH02 scroll section ────────────────────────────────────────────────── */
+.scroll-film-ch02 {
+  position: relative;
+  height: 300vh;
+}
+
+/* ─── CH02 data fragments ────────────────────────────────────────────────── */
+.data-fragment {
+  position: absolute;
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  color: var(--haze);
+  border: 1px solid rgba(45, 98, 140, 0.32);
+  padding: 10px 14px;
+  background: rgba(4, 18, 26, 0.3);
+  pointer-events: none;
+  z-index: 10;
+  will-change: transform, opacity, filter;
+}
+
+.frag-label {
+  font-size: 0.5rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.65);
+  margin-bottom: 6px;
+}
+
+.frag-value {
+  font-size: var(--text-sm);
+  font-weight: 200;
+  color: var(--ice);
+  line-height: 1.6;
+}
+
+.frag-bar {
+  height: 1px;
+  background: var(--steel);
+  opacity: 0.4;
+  margin-top: 8px;
+}
+
+/* Motion is driven entirely by JS — no CSS keyframes */
+
+/* Fragment positions — scattered around screen centre (hero vessel area) */
+.frag-1  { top: 14%;    left: 7%;  }
+.frag-2  { top: 10%;    right: 9%; }
+.frag-3  { top: 40%;    right: 5%; }
+.frag-4  { top: 46%;    left: 5%;  }
+.frag-5  { bottom: 30%; right: 10%; }
+.frag-6  { bottom: 22%; right: 5%; }
+.frag-7  { top: 27%;    left: 13%; }
+.frag-8  { bottom: 26%; left: 6%;  }
+
+/* ─── CH02 text reveal ───────────────────────────────────────────────────── */
+.ch02-text {
+  position: absolute;
+  bottom: var(--space-16);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: max-content;
+  max-width: 70vw;
+  z-index: 10;
+}
+
+.ch02-text-a {
+  font-size: clamp(1.4rem, 2.4vw, var(--text-xl));
+  font-weight: 200;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  line-height: 1.2;
+}
+
+.ch02-text-b {
+  font-size: clamp(0.875rem, 1.3vw, var(--text-md));
+  font-weight: 300;
+  color: var(--haze);
+  margin-top: var(--space-2);
+  letter-spacing: 0.02em;
+}
+
+/* ─── CH03: AnchorVoyage system emergence ────────────────────────────────── */
+
+.scroll-film-ch03 { position: relative; height: 300vh; }
+
+.ch03-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Module cards — spatial intelligence panels */
+.ch03-module {
+  position: absolute;
+  border: 1px solid rgba(24, 224, 255, 0.15);
+  padding: 14px 16px;
+  background: rgba(4, 18, 26, 0.58);
+  backdrop-filter: blur(8px);
+  will-change: transform, opacity;
+  animation: mod-field-resonance 7s ease-in-out infinite;
+}
+
+/* Field resonance: background luminosity shifts — physical, not UI-state */
+@keyframes mod-field-resonance {
+  0%, 100% { background: rgba(4, 18, 26, 0.58); }
+  50%       { background: rgba(5, 22, 34, 0.65); }
+}
+
+/* Each module has different information density — not grid-identical */
+.ch03-module.mod-voyage-route { width: clamp(152px, 13.2vw, 215px); }
+.ch03-module.mod-economics    { width: clamp(142px, 11.8vw, 194px); }
+.ch03-module.mod-eta-intel    { width: clamp(160px, 13.8vw, 224px); }
+.ch03-module.mod-risk-layer   { width: clamp(138px, 11.5vw, 188px); }
+
+.mod-tag {
+  font-size: 0.38rem;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.48);
+  margin-bottom: 8px;
+}
+
+.mod-title {
+  font-size: clamp(0.7rem, 1.02vw, 0.88rem);
+  font-weight: 300;
+  color: var(--ice);
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  margin-bottom: 14px;
+}
+
+.mod-bars { display: flex; flex-direction: column; gap: 6px; }
+
+.mod-bar {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(24, 224, 255, 0.45), rgba(24, 224, 255, 0));
+  animation: bar-scan 3.8s ease-in-out infinite;
+}
+.mod-bar:nth-child(2) { opacity: 0.7; animation-delay: 0.7s; }
+.mod-bar:nth-child(3) { opacity: 0.5; animation-delay: 1.4s; }
+
+@keyframes bar-scan {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.75; }
+}
+
+/* Field positions — slight asymmetry so layout feels physically anchored, not grid-designed.
+   Animation delays are non-round so no two modules breathe in sync. */
+.ch03-module.mod-voyage-route { top: 17%;    left: 7%;   animation-delay: 0s;    }
+.ch03-module.mod-economics    { top: 21%;    right: 8%;  animation-delay: 1.85s; }
+.ch03-module.mod-eta-intel    { bottom: 16%; left: 6%;   animation-delay: 3.40s; }
+.ch03-module.mod-risk-layer   { bottom: 20%; right: 7%;  animation-delay: 2.25s; }
+
+/* AnchorVoyage wordmark — resolves in place, below the hero. No entrance, just clarity. */
+.ch03-wordmark {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 68px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  will-change: opacity;
+}
+
+.wordmark-name {
+  font-size: clamp(2.8rem, 5.5vw, 4.8rem);
+  font-weight: 100;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.86);
+  text-shadow: 0 0 48px rgba(24, 224, 255, 0.18);
+}
+
+.wordmark-sub {
+  font-size: clamp(0.6rem, 0.9vw, 0.74rem);
+  font-weight: 300;
+  letter-spacing: 0.40em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.52);
+}
+
+/* ─── CH04: Anchor AI — Live Intelligence Layer ───────────────────────────── */
+
+.scroll-film-ch04 { position: relative; height: 300vh; }
+
+.ch04-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Anchor AI — banner reveal at top, clear of the scan core below it */
+.anchor-ai-reveal {
+  position: absolute;
+  top: 19%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  will-change: opacity, transform;
+}
+
+.ai-wordmark {
+  font-size: clamp(2.6rem, 5.2vw, 4.6rem);
+  font-weight: 100;
+  letter-spacing: 0.34em;
+  /* optical: letter-spacing pads the right edge — nudge back to true centre */
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.92);
+  text-shadow: 0 0 70px rgba(24, 224, 255, 0.22);
+}
+
+/* Scanline beneath the wordmark — a bright segment sweeps across: "processing" */
+.ai-scanline {
+  position: relative;
+  width: clamp(190px, 27vw, 360px);
+  height: 1px;
+  background: rgba(24, 224, 255, 0.10);
+  overflow: hidden;
+}
+
+.ai-scanline-sweep {
+  position: absolute;
+  top: 0;
+  left: -40%;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(to right,
+    rgba(24, 224, 255, 0) 0%,
+    rgba(24, 224, 255, 0.85) 50%,
+    rgba(24, 224, 255, 0) 100%);
+  animation: ai-sweep 3.8s ease-in-out infinite;
+}
+
+@keyframes ai-sweep {
+  0%   { left: -40%; }
+  60%  { left: 100%; }
+  100% { left: 100%; }
+}
+
+.ai-subline {
+  font-size: clamp(0.58rem, 0.85vw, 0.72rem);
+  font-weight: 200;
+  letter-spacing: 0.46em;
+  text-indent: 0.46em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.42);
+}
+
+/* Intelligence signal annotations — four nodes framing the central scan field */
+.ai-signal {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  will-change: opacity, transform;
+}
+
+.ai-sig-a { left: 9%;  top: 41%; }
+.ai-sig-b { right: 9%; top: 41%; align-items: flex-end; text-align: right; }
+.ai-sig-c { left: 9%;  top: 65%; }
+.ai-sig-d { right: 9%; top: 65%; align-items: flex-end; text-align: right; }
+
+/* Head row: live dot + label */
+.ai-sig-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.ai-sig-b .ai-sig-head,
+.ai-sig-d .ai-sig-head { flex-direction: row-reverse; }
+
+.ai-sig-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(24, 224, 255, 0.7);
+  flex: none;
+}
+
+.ai-sig-a .ai-sig-dot { animation: ai-dot-pulse 2.4s ease-in-out 0.0s infinite alternate; }
+.ai-sig-b .ai-sig-dot { animation: ai-dot-pulse 2.4s ease-in-out 0.6s infinite alternate; }
+.ai-sig-c .ai-sig-dot { animation: ai-dot-pulse 2.4s ease-in-out 1.2s infinite alternate; }
+.ai-sig-d .ai-sig-dot { animation: ai-dot-pulse 2.4s ease-in-out 0.9s infinite alternate; }
+
+@keyframes ai-dot-pulse {
+  from { opacity: 0.28; box-shadow: 0 0 0 rgba(24, 224, 255, 0); }
+  to   { opacity: 1.00; box-shadow: 0 0 8px rgba(24, 224, 255, 0.6); }
+}
+
+.ai-sig-label {
+  font-size: 0.52rem;
+  font-weight: 300;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.42);
+}
+
+.ai-sig-value {
+  font-size: 0.74rem;
+  font-weight: 200;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.64);
+}
+
+.ai-sig-a .ai-sig-value { animation: ai-sig-breathe 3.2s ease-in-out 0.0s infinite alternate; }
+.ai-sig-b .ai-sig-value { animation: ai-sig-breathe 3.2s ease-in-out 0.7s infinite alternate; }
+.ai-sig-c .ai-sig-value { animation: ai-sig-breathe 3.2s ease-in-out 1.5s infinite alternate; }
+.ai-sig-d .ai-sig-value { animation: ai-sig-breathe 3.2s ease-in-out 0.3s infinite alternate; }
+
+@keyframes ai-sig-breathe {
+  from { color: rgba(24, 224, 255, 0.52); }
+  to   { color: rgba(24, 224, 255, 0.82); }
+}
+
+/* Micro-bar — processing activity visualiser */
+.ai-sig-bar {
+  width: 52px;
+  height: 1px;
+  background: rgba(24, 224, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  margin-top: 3px;
+}
+
+.ai-sig-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(to right, rgba(24, 224, 255, 0.12), rgba(24, 224, 255, 0.72));
+}
+
+/* Right-side signals: bar fills from the right, toward centre */
+.ai-sig-b .ai-sig-fill,
+.ai-sig-d .ai-sig-fill {
+  left: auto;
+  right: 0;
+  background: linear-gradient(to left, rgba(24, 224, 255, 0.12), rgba(24, 224, 255, 0.72));
+}
+
+.ai-sig-a .ai-sig-fill { animation: ai-bar-scan 3.4s ease-in-out 0.00s infinite; }
+.ai-sig-b .ai-sig-fill { animation: ai-bar-scan 3.4s ease-in-out 0.85s infinite; }
+.ai-sig-c .ai-sig-fill { animation: ai-bar-scan 3.4s ease-in-out 1.70s infinite; }
+.ai-sig-d .ai-sig-fill { animation: ai-bar-scan 3.4s ease-in-out 0.42s infinite; }
+
+@keyframes ai-bar-scan {
+  0%   { width: 22%; opacity: 0.5; }
+  45%  { width: 84%; opacity: 1.0; }
+  75%  { width: 46%; opacity: 0.7; }
+  100% { width: 22%; opacity: 0.5; }
+}
+
+/* Faint hairline — connects each annotation toward the scan field */
+.ai-sig-line {
+  position: absolute;
+  top: 6px;
+  height: 1px;
+  width: clamp(60px, 9vw, 130px);
+  pointer-events: none;
+}
+.ai-sig-a .ai-sig-line,
+.ai-sig-c .ai-sig-line {
+  left: 100%;
+  margin-left: 16px;
+  background: linear-gradient(to right, rgba(24, 224, 255, 0.24), rgba(24, 224, 255, 0));
+}
+.ai-sig-b .ai-sig-line,
+.ai-sig-d .ai-sig-line {
+  right: 100%;
+  margin-right: 16px;
+  background: linear-gradient(to left, rgba(24, 224, 255, 0.24), rgba(24, 224, 255, 0));
+}
+
+/* Status indicator — [● ACTIVE]   Maritime Intelligence Field Processing */
+.ai-footer-bar {
+  position: absolute;
+  bottom: 8.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  white-space: nowrap;
+  will-change: opacity, filter;
+}
+
+.ai-active-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.50rem;
+  font-weight: 300;
+  letter-spacing: 0.40em;
+  text-indent: 0.40em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.84);
+  border: 1px solid rgba(24, 224, 255, 0.32);
+  padding: 5px 16px;
+  border-radius: 20px;
+  animation: ai-pill-glow 2.8s ease-in-out infinite;
+}
+
+.ai-pill-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(24, 224, 255, 0.85);
+  text-indent: 0;
+  animation: ai-dot-pulse 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes ai-pill-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(24, 224, 255, 0); }
+  50%      { box-shadow: 0 0 16px rgba(24, 224, 255, 0.2); }
+}
+
+.ai-footer-text {
+  font-size: 0.50rem;
+  font-weight: 200;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(24, 224, 255, 0.38);
 }
