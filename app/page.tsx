@@ -495,7 +495,6 @@ export default function Home() {
           <div className="data-fragment-inner">
             <div className="frag-label">WX · Signal</div>
             <div className="frag-value">SWELL HT ↑ 4.2m<br/>BEAM SEA · 285°</div>
-            <div className="frag-bar" style={{ width: '55%' }} />
           </div>
         </div>
 
@@ -503,7 +502,6 @@ export default function Home() {
           <div className="data-fragment-inner">
             <div className="frag-label">Port Status</div>
             <div className="frag-value">JEBEL ALI · STS<br/>WAIT EST: +14h</div>
-            <div className="frag-bar" style={{ width: '30%' }} />
           </div>
         </div>
 
@@ -511,7 +509,6 @@ export default function Home() {
           <div className="data-fragment-inner">
             <div className="frag-label">ETA · Calc</div>
             <div className="frag-value">PIRAEUS Δ +26h<br/>CONF ░░░░ 43%</div>
-            <div className="frag-bar" style={{ width: '43%' }} />
           </div>
         </div>
 
@@ -519,7 +516,6 @@ export default function Home() {
           <div className="data-fragment-inner">
             <div className="frag-label">TD3C Spot</div>
             <div className="frag-value">$18,400 / DAY<br/>↑ 2.1% VS PREV</div>
-            <div className="frag-bar" style={{ width: '70%' }} />
           </div>
         </div>
 
@@ -527,7 +523,6 @@ export default function Home() {
           <div className="data-fragment-inner">
             <div className="frag-label">Bunker · HFO</div>
             <div className="frag-value">$520 / MT<br/>386 MT GSM REQ.</div>
-            <div className="frag-bar" style={{ width: '48%' }} />
           </div>
         </div>
 
@@ -535,7 +530,6 @@ export default function Home() {
           <div className="data-fragment-inner">
             <div className="frag-label">Route Analysis</div>
             <div className="frag-value">DELAY: HIGH<br/>ALT +340 NM</div>
-            <div className="frag-bar" style={{ width: '60%' }} />
           </div>
         </div>
 
@@ -543,7 +537,6 @@ export default function Home() {
           <div className="data-fragment-inner">
             <div className="frag-label">Vessel Draft</div>
             <div className="frag-value">19.2m · LADEN<br/>AIR DRAFT 58m</div>
-            <div className="frag-bar" style={{ width: '38%' }} />
           </div>
         </div>
 
@@ -551,7 +544,6 @@ export default function Home() {
           <div className="data-fragment-inner">
             <div className="frag-label">Doc Status</div>
             <div className="frag-value">3 DOCS MISSING<br/>PORT STATE: PENDING</div>
-            <div className="frag-bar" style={{ width: '25%' }} />
           </div>
         </div>
 
@@ -572,44 +564,24 @@ export default function Home() {
         <div className="ch03-module mod-voyage-route">
           <div className="mod-tag">Active System</div>
           <div className="mod-title">Voyage Route</div>
-          <div className="mod-bars">
-            <div className="mod-bar" style={{ width: '88%' }} />
-            <div className="mod-bar" style={{ width: '52%' }} />
-            <div className="mod-bar" style={{ width: '71%' }} />
-          </div>
         </div>
 
         {/* Module: Economics — top-right */}
         <div className="ch03-module mod-economics">
           <div className="mod-tag">Live Feed</div>
           <div className="mod-title">Economics</div>
-          <div className="mod-bars">
-            <div className="mod-bar" style={{ width: '74%' }} />
-            <div className="mod-bar" style={{ width: '63%' }} />
-            <div className="mod-bar" style={{ width: '41%' }} />
-          </div>
         </div>
 
         {/* Module: ETA Intelligence — bottom-left */}
         <div className="ch03-module mod-eta-intel">
           <div className="mod-tag">Computed</div>
           <div className="mod-title">ETA Intelligence</div>
-          <div className="mod-bars">
-            <div className="mod-bar" style={{ width: '92%' }} />
-            <div className="mod-bar" style={{ width: '57%' }} />
-            <div className="mod-bar" style={{ width: '34%' }} />
-          </div>
         </div>
 
         {/* Module: Risk Layer — bottom-right */}
         <div className="ch03-module mod-risk-layer">
           <div className="mod-tag">Monitoring</div>
           <div className="mod-title">Risk Layer</div>
-          <div className="mod-bars">
-            <div className="mod-bar" style={{ width: '66%' }} />
-            <div className="mod-bar" style={{ width: '43%' }} />
-            <div className="mod-bar" style={{ width: '79%' }} />
-          </div>
         </div>
 
         {/* AnchorVoyage wordmark — resolves last, below the hero vessel */}
@@ -639,7 +611,6 @@ export default function Home() {
             <span className="ai-sig-label">Route Optimisation</span>
           </div>
           <div className="ai-sig-value">Active</div>
-          <div className="ai-sig-bar"><div className="ai-sig-fill" /></div>
           <div className="ai-sig-line" />
         </div>
 
@@ -650,7 +621,6 @@ export default function Home() {
             <span className="ai-sig-label">Risk Assessment</span>
           </div>
           <div className="ai-sig-value">Processing</div>
-          <div className="ai-sig-bar"><div className="ai-sig-fill" /></div>
           <div className="ai-sig-line" />
         </div>
 
@@ -661,7 +631,6 @@ export default function Home() {
             <span className="ai-sig-label">ETA Precision</span>
           </div>
           <div className="ai-sig-value">Refining</div>
-          <div className="ai-sig-bar"><div className="ai-sig-fill" /></div>
           <div className="ai-sig-line" />
         </div>
 
@@ -672,7 +641,6 @@ export default function Home() {
             <span className="ai-sig-label">Market Intelligence</span>
           </div>
           <div className="ai-sig-value">Reading</div>
-          <div className="ai-sig-bar"><div className="ai-sig-fill" /></div>
           <div className="ai-sig-line" />
         </div>
 
