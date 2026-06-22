@@ -1,24 +1,31 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, Fragment } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { scrollStore } from '@/lib/scrollStore'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// ─── Split title text into individually animatable char spans ─────────────
+// ─── Split text into individually animatable char spans ───────────────────
+// Words are wrapped in inline-block spans so a multi-word line wraps at word
+// boundaries (never mid-word); the breakable space sits between word spans.
+// Each visible glyph keeps the .char hook the GSAP stagger drives in DOM order.
 function SplitTitle({ text, className }: { text: string; className?: string }) {
+  const words = text.split(' ')
   return (
     <span className={className}>
-      {text.split('').map((char, i) => (
-        <span
-          key={i}
-          className="char"
-          style={{ display: 'inline-block', whiteSpace: char === ' ' ? 'pre' : undefined }}
-        >
-          {char}
-        </span>
+      {words.map((word, wi) => (
+        <Fragment key={wi}>
+          <span className="word" style={{ display: 'inline-block' }}>
+            {word.split('').map((char, ci) => (
+              <span key={ci} className="char" style={{ display: 'inline-block' }}>
+                {char}
+              </span>
+            ))}
+          </span>
+          {wi < words.length - 1 ? ' ' : ''}
+        </Fragment>
       ))}
     </span>
   )
@@ -41,19 +48,19 @@ export default function Home() {
     if (!film || !film02 || !film03 || !film04 || !film05) return
 
     // Grab elements via ref so there's no global selector ambiguity
-    const chars    = Array.from(film.querySelectorAll<HTMLElement>('.ch01-title .char'))
-    const ch00El   = film.querySelector<HTMLElement>('.ch00-content')
-    const dividerEl = film.querySelector<HTMLElement>('.ch01-divider')
-    const subEl    = film.querySelector<HTMLElement>('.ch01-sub')
+    const chars      = Array.from(film.querySelectorAll<HTMLElement>('.ch01-statement .char'))
+    const ch00El     = film.querySelector<HTMLElement>('.ch00-content')
+    const dividerEl  = film.querySelector<HTMLElement>('.ch01-divider')
+    const statementEl = film.querySelector<HTMLElement>('.ch01-statement')
 
     // Initial hidden states via inline style (avoids GSAP/hydration race)
     chars.forEach((c) => {
       c.style.opacity = '0'
-      c.style.transform = 'translateY(24px)'
-      c.style.filter = 'blur(6px)'
+      c.style.transform = 'translateY(16px)'
+      c.style.filter = 'blur(7px)'
     })
-    if (dividerEl) { dividerEl.style.opacity = '0'; dividerEl.style.transform = 'scaleX(0)' }
-    if (subEl)     { subEl.style.opacity = '0';     subEl.style.transform = 'translateY(12px)' }
+    if (dividerEl)   { dividerEl.style.opacity = '0';  dividerEl.style.transform = 'scaleX(0)' }
+    if (statementEl) { statementEl.style.transform = 'translateY(10px)' }
 
     // Smootherstep — S-curve with faster lock at ends
     function sm(t: number) {
@@ -79,31 +86,31 @@ export default function Home() {
           ch00El.style.transform = `translateY(${-40 * t}px)`
         }
 
-        // CH01 title: staggered chars across 72–93% of progress
+        // CH01 divider — lead accent: a signal resolves first (66–74%), just
+        // before the positioning line writes in beneath it.
+        if (dividerEl) {
+          const t = sm((p - 0.66) / 0.08)
+          dividerEl.style.opacity = String(t)
+          dividerEl.style.transform = `scaleX(${t})`
+          dividerEl.style.transformOrigin = 'left center'
+        }
+
+        // CH01 statement: the whole line settles up as one (0.70–0.96) while its
+        // chars individually resolve from blur (72–93%). Layered motion — the
+        // sentence "develops" into place — calm, no flash, then holds still.
+        if (statementEl) {
+          const ts = sm((p - 0.70) / 0.26)
+          statementEl.style.transform = `translateY(${10 * (1 - ts)}px)`
+        }
         const N = chars.length
         const raw = (p - 0.72) / 0.21  // normalised within [0.72, 0.93]
         chars.forEach((char, i) => {
           // Each char starts slightly later (stagger = 1 char-width per char)
           const t = sm(raw * N - i)
           char.style.opacity = String(t)
-          char.style.transform = `translateY(${24 * (1 - t)}px)`
-          char.style.filter = `blur(${6 * (1 - t)}px)`
+          char.style.transform = `translateY(${16 * (1 - t)}px)`
+          char.style.filter = `blur(${7 * (1 - t)}px)`
         })
-
-        // CH01 divider: 82–90%
-        if (dividerEl) {
-          const t = sm((p - 0.82) / 0.08)
-          dividerEl.style.opacity = String(t)
-          dividerEl.style.transform = `scaleX(${t})`
-          dividerEl.style.transformOrigin = 'left center'
-        }
-
-        // CH01 sub: 87–97%
-        if (subEl) {
-          const t = sm((p - 0.87) / 0.10)
-          subEl.style.opacity = String(t)
-          subEl.style.transform = `translateY(${12 * (1 - t)}px)`
-        }
       },
     })
 
@@ -298,30 +305,28 @@ export default function Home() {
           ch04reveal.style.opacity = String(t * 0.95)
           ch04reveal.style.transform = `translate(-50%, ${-16 * (1 - t)}px)`
         }
-        // Signals fade in spatially staggered — AI reads different field zones
+        // Signals fade in spatially staggered — AI reads different field zones.
+        // They frame the scene quietly (max ~0.58 opacity) and do NOT flare with
+        // the peak: the focal point is the Anchor AI wordmark + the central scan.
         if (ch04sigA) {
           const t = sm((p - 0.16) / 0.18)
-          ch04sigA.style.opacity = String(t * 0.92)
+          ch04sigA.style.opacity = String(t * 0.58)
           ch04sigA.style.transform = `translateX(${-8 * (1 - t)}px)`
-          ch04sigA.style.filter = `brightness(${sigBright})`
         }
         if (ch04sigB) {
           const t = sm((p - 0.22) / 0.18)
-          ch04sigB.style.opacity = String(t * 0.92)
+          ch04sigB.style.opacity = String(t * 0.58)
           ch04sigB.style.transform = `translateX(${8 * (1 - t)}px)`
-          ch04sigB.style.filter = `brightness(${sigBright})`
         }
         if (ch04sigC) {
           const t = sm((p - 0.28) / 0.18)
-          ch04sigC.style.opacity = String(t * 0.92)
+          ch04sigC.style.opacity = String(t * 0.58)
           ch04sigC.style.transform = `translateX(${-8 * (1 - t)}px)`
-          ch04sigC.style.filter = `brightness(${sigBright})`
         }
         if (ch04sigD) {
           const t = sm((p - 0.34) / 0.18)
-          ch04sigD.style.opacity = String(t * 0.92)
+          ch04sigD.style.opacity = String(t * 0.58)
           ch04sigD.style.transform = `translateX(${8 * (1 - t)}px)`
-          ch04sigD.style.filter = `brightness(${sigBright})`
         }
         // Footer — last, lifts to full presence and brightens subtly at peak
         if (ch04footer) {
@@ -471,15 +476,13 @@ export default function Home() {
           </p>
         </div>
 
-        {/* CH01 — Orientation (emerges from the bottom-left as routes resolve) */}
+        {/* CH01 — Orientation: the world organises. Positioning, not the brand —
+            the large "Anchor Point" wordmark is spent only once, in CH05. */}
         <div className="ch01-content">
-          <h1 className="ch01-title">
-            <SplitTitle text="Anchor Point" />
-          </h1>
           <div className="ch01-divider" />
-          <p className="ch01-sub">
-            The intelligence layer for global shipping.
-          </p>
+          <h2 className="ch01-statement">
+            <SplitTitle text="The intelligence layer for global shipping." />
+          </h2>
         </div>
 
       </div>

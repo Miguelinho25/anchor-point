@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Josefin_Sans } from 'next/font/google'
+import { Josefin_Sans, Inter } from 'next/font/google'
 import './globals.css'
 import LenisProvider from '@/components/providers/LenisProvider'
 import Stage from '@/components/Stage/Stage'
@@ -8,6 +8,16 @@ const josefin = Josefin_Sans({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '600'],
   variable: '--font-display',
+  display: 'swap',
+})
+
+// Neutral grotesk — used ONLY for small labels / data / interface text, where
+// Josefin's thin geometric glyphs lose legibility. Hero wordmarks stay on the
+// display face. Loaded via next/font (no package install).
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-ui',
   display: 'swap',
 })
 
@@ -22,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={josefin.variable} style={{ fontFamily: 'var(--font-display), sans-serif' }}>
+    <html lang="en" className={`${josefin.variable} ${inter.variable}`} style={{ fontFamily: 'var(--font-display), sans-serif' }}>
       <body>
         <LenisProvider>
           {/* WebGL canvas — fixed behind everything, persists across route changes */}

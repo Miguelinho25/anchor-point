@@ -348,6 +348,16 @@ export default function Stage() {
       const scanOut = (elapsed * 0.20) % 9.5
       const scanIn  = 8.5 - ((elapsed * 0.14) % 8.5)
 
+      // CH01: as the positioning statement writes in, the route network resolves
+      // from a slightly loose state into clean arcs — "the system begins to make
+      // sense." Amplitude is fully driven by scroll progress (no infinite loop):
+      // it rises as the routes draw in, then settles to exactly zero by end of CH01.
+      const inCh01      = ch02p < 0.001 && !aiActive
+      const ch01Settle  = inCh01
+        ? sm05((progress - 0.28) / 0.18) * (1 - sm05((progress - 0.58) / 0.37))
+        : 0
+      const ch01Bending = ch01Settle > 0.0008
+
       routeLines.forEach((line, li) => {
         const baseRange  = Math.max(2, Math.floor((ROUTE_PTS + 1) * lineProgress))
         const scanOffset = aiActive
@@ -391,8 +401,27 @@ export default function Stage() {
           posA.needsUpdate = true
           colA.needsUpdate = true
           routeDeformed = true
+        } else if (ch01Bending) {
+          // CH01 settle: a gentle, low-frequency sway pinned at both ports, its
+          // amplitude scaled by ch01Settle so it resolves to clean, still arcs as
+          // the statement completes. Position only — colours stay pristine white,
+          // so it reads as the network organising, never as a bright HUD effect.
+          const amp = 0.085 * ch01Settle
+          const ph  = elapsed * 0.06
+          for (let i = 0; i < vCount; i++) {
+            const u   = i / (vCount - 1)
+            const win = Math.sin(u * Math.PI)
+            const bend =
+              Math.sin(u * Math.PI * (1.1 + li * 0.35) + ph + li * 1.3) * 0.70 +
+              Math.sin(u * Math.PI * (2.0 + li * 0.20) + ph * 0.8 + li * 0.5) * 0.30
+            const disp = bend * win * amp
+            const bx = base[i * 3], bz = base[i * 3 + 2]
+            posA.setXYZ(i, bx + norm[i * 2] * disp, base[i * 3 + 1], bz + norm[i * 2 + 1] * disp)
+          }
+          posA.needsUpdate = true
+          routeDeformed = true
         } else if (routeDeformed) {
-          // Leaving CH04 (scrolling up): restore pristine geometry + colours once
+          // Leaving CH04/CH01 deform: restore pristine geometry + colours once
           for (let i = 0; i < vCount; i++) {
             posA.setXYZ(i, base[i * 3], base[i * 3 + 1], base[i * 3 + 2])
             colA.setXYZ(i, 1, 1, 1)
@@ -401,7 +430,7 @@ export default function Stage() {
           colA.needsUpdate = true
         }
       })
-      if (!aiActive) routeDeformed = false
+      if (!aiActive && !ch01Bending) routeDeformed = false
 
       // Hero vessel: pulse slows and steadies as system locks into operation
       const pulseHz   = 1.6 * (1 - ch03p * 0.52)

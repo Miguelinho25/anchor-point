@@ -55,6 +55,22 @@ body {
   overscroll-behavior: none;
 }
 
+/* ─── Secondary UI face ──────────────────────────────────────────────────────
+   Small labels / data / interface text use the neutral grotesk (--font-ui).
+   The display face stays on hero wordmarks, statements, leads, and product
+   names. This is the only place the interface font is applied. */
+.ch00-scroll-hint,
+.frag-label, .frag-value,
+.mod-tag,
+.wordmark-sub,
+.ai-subline,
+.ai-sig-label, .ai-sig-value,
+.ai-active-pill, .ai-footer-text,
+.ch05-mod-layer, .ch05-eyebrow, .ch05-status,
+.ch05-fut-label {
+  font-family: "Inter", var(--font-ui), system-ui, sans-serif;
+}
+
 /* ─── Typography ─────────────────────────────────────────────────────────── */
 .t-hero {
   font-size: var(--text-3xl);
@@ -179,34 +195,29 @@ body {
   z-index: 10;
 }
 
-.ch01-title {
-  font-size: clamp(3rem, 6vw, var(--text-hero));
-  font-weight: 100;
-  letter-spacing: -0.02em;
-  line-height: 1;
+/* CH01 hero is now the positioning statement (not the brand wordmark).
+   Strong editorial scale — clearly a sentence, well below CH05's wordmark climax. */
+.ch01-statement {
+  display: block;
+  font-size: clamp(1.6rem, 3.2vw, 2.75rem);
+  font-weight: 200;
+  letter-spacing: -0.005em;
+  line-height: 1.2;
   color: var(--white);
-  overflow: hidden;
+  max-width: 17ch;
+  overflow: visible;
 }
 
-.ch01-title .char {
-  display: inline-block;
-}
+.ch01-statement .word { display: inline-block; }
+.ch01-statement .char { display: inline-block; }
 
 .ch01-divider {
   width: 2px;
   height: 2px;
   background: var(--signal);
   border-radius: 50%;
-  margin: var(--space-3) 0;
+  margin: 0 0 var(--space-3) 0;
   box-shadow: 0 0 8px var(--signal);
-}
-
-.ch01-sub {
-  font-size: clamp(0.875rem, 1.4vw, var(--text-md));
-  font-weight: 300;
-  color: var(--ice);
-  letter-spacing: 0.04em;
-  max-width: 40ch;
 }
 
 /* ─── Hairline rule ──────────────────────────────────────────────────────── */
@@ -368,10 +379,12 @@ body {
   will-change: opacity;
 }
 
+/* Child wordmark (AnchorVoyage) — subordinate tier: shared size/tracking with
+   Anchor AI, ice, no glow. Reads as a system beneath the parent platform. */
 .wordmark-name {
-  font-size: clamp(2.8rem, 5.5vw, 4.8rem);
-  font-weight: 100;
-  letter-spacing: 0.32em;
+  font-size: clamp(2.4rem, 4.8vw, 4rem);
+  font-weight: 200;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--ice);
   text-shadow: none;
@@ -412,12 +425,13 @@ body {
   will-change: opacity, transform;
 }
 
+/* Child wordmark (Anchor AI) — shares the AnchorVoyage tier exactly. */
 .ai-wordmark {
-  font-size: clamp(2.6rem, 5.2vw, 4.6rem);
-  font-weight: 100;
-  letter-spacing: 0.34em;
+  font-size: clamp(2.4rem, 4.8vw, 4rem);
+  font-weight: 200;
+  letter-spacing: 0.28em;
   /* optical: letter-spacing pads the right edge — nudge back to true centre */
-  text-indent: 0.34em;
+  text-indent: 0.28em;
   text-transform: uppercase;
   color: var(--ice);
   text-shadow: none;
@@ -484,12 +498,12 @@ body {
 .ai-sig-d .ai-sig-head { flex-direction: row-reverse; }
 
 .ai-sig-dot {
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
-  background: rgba(24, 224, 255, 0.55);
+  background: var(--haze);
   flex: none;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 @keyframes ai-dot-pulse {
@@ -529,13 +543,13 @@ body {
 .ai-sig-c .ai-sig-line {
   left: 100%;
   margin-left: 16px;
-  background: linear-gradient(to right, rgba(24, 224, 255, 0.24), rgba(24, 224, 255, 0));
+  background: linear-gradient(to right, rgba(90, 134, 166, 0.20), rgba(90, 134, 166, 0));
 }
 .ai-sig-b .ai-sig-line,
 .ai-sig-d .ai-sig-line {
   right: 100%;
   margin-right: 16px;
-  background: linear-gradient(to left, rgba(24, 224, 255, 0.24), rgba(24, 224, 255, 0));
+  background: linear-gradient(to left, rgba(90, 134, 166, 0.20), rgba(90, 134, 166, 0));
 }
 
 /* Status indicator — [● ACTIVE]   Maritime Intelligence Field Processing */
@@ -743,11 +757,14 @@ body {
 }
 
 .ch05-wordmark {
-  /* Dominant but elegant — capped by viewport height so it never crowds the modules */
+  /* Parent platform — dominant tier: the largest wordmark, white, and the only
+     one carrying a glow. Capped by viewport height so it never crowds the modules.
+     Size envelope unchanged (proven safe at 1366×768); weight 200 reads less
+     fragile than 100 while staying cinematic. */
   font-size: clamp(2.4rem, min(7vw, 12vh), 5rem);
-  font-weight: 100;
-  letter-spacing: 0.18em;
-  text-indent: 0.18em;
+  font-weight: 200;
+  letter-spacing: 0.20em;
+  text-indent: 0.20em;
   text-transform: uppercase;
   color: var(--white);
   text-shadow:
