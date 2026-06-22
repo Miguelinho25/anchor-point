@@ -44,6 +44,20 @@ If `npm run dev` complains another dev server holds the `.next` cache, kill the 
 
 ---
 
+## 1.5 Bundled skills & dev tooling (set this up first)
+
+**The `ui-ux-pro-max` design-intelligence skill is bundled in this repo** at `.claude/skills/ui-ux-pro-max/`. It was copied in **specifically for cross-device parity** — on the primary laptop it lives outside the repo (`Claude Code/.claude/skills/`), so it would NOT have travelled with the clone. Because it now sits in the project's `.claude/skills/`, **Claude Code auto-discovers it as a project skill** when this repo is the working directory — no manual install step. Invoke it via the Skill tool whenever you plan/build/review UI, pick palettes or typography, or check accessibility.
+
+- **Contents:** `SKILL.md` (the guide) + `data/*.csv` (67 styles, 96 palettes, 57 font pairings, 99 UX guidelines, 25 charts, 13 stacks incl. Next.js/React/Tailwind/shadcn) + `scripts/*.py` (search/query helpers: `search.py`, `design_system.py`, `core.py`).
+- **Requires Python 3** to run the `scripts/*.py` searchers. If Python isn't installed, the `SKILL.md` + CSVs are still fully readable directly — the skill degrades gracefully. `__pycache__`/`*.pyc` are gitignored so bytecode never gets committed.
+- **Why it matters here:** use it directly for the polish work — typography pairing + discipline (plan items 1D/2B) and colour-palette/contrast restraint (1A). It has data made for exactly these decisions.
+
+**Verify it loaded:** on the other laptop, confirm `ui-ux-pro-max` appears among available skills when Claude is working *inside this repo*. If it doesn't, you opened Claude Code with the wrong working directory — project skills load only from `<repo>/.claude/skills/`.
+
+**Other skills (NOT bundled):** the primary environment also had Anthropic plugin skills (`docx`, `pdf`, `pptx`, `xlsx`, `code-review`, `verify`, `security-review`, etc.). Those are plugin/environment-level, not project files, so they can't be shipped via this repo — install them through your normal Claude Code plugin/marketplace setup on the other laptop if you want them. Only `ui-ux-pro-max` is bundled because it's the one directly relevant to this project.
+
+---
+
 ## 2. What the site is (product & narrative)
 
 **Anchor Point** = the parent operating system for maritime intelligence. Two sub-products live under it: **AnchorVoyage** (operational layer) and **Anchor AI** (intelligence layer). The homepage is a 6-chapter scroll film:
@@ -69,6 +83,20 @@ Emotional target of CH05: *"Oh… this is the platform."*
 - **GSAP + ScrollTrigger** — single master `onUpdate` per chapter, `scrub: 2.5`, smootherstep easing.
 - **Lenis v1.3.23** — `duration: 1.6`, expo easing, driven by `gsap.ticker`.
 - **Font:** `Josefin_Sans` via `next/font/google` in `app/layout.tsx` (weights 100,200,300,400,600), exposed as `--font-display`, applied to `<html>` — so **every element inherits the display face, including 8px labels** (this is a typography problem; see plan).
+
+### Exact dependencies (`package.json`) — install with `npm install`
+```
+dependencies:
+  next 16.2.9 · react 19.2.4 · react-dom 19.2.4
+  three ^0.184.0 · gsap ^3.15.0 · lenis ^1.3.23
+  @tailwindcss/vite ^4.3.1
+devDependencies:
+  typescript ^5 · tailwindcss ^4.3.1 · @tailwindcss/postcss ^4
+  eslint ^9 · eslint-config-next 16.2.9
+  @types/node ^20 · @types/react ^19 · @types/react-dom ^19
+```
+Scripts: `npm run dev` (Turbopack dev, port 3000) · `npm run build` · `npm run start` · `npm run lint`.
+Note: **`@types/three` is intentionally NOT installed** — see §8 (the `any` errors in `Stage.tsx` are expected and harmless).
 
 ### Key files
 | File | Role |
@@ -265,7 +293,7 @@ When done with a session, `preview_stop` the server.
 
 ## 11. Immediate next action for the other-laptop Claude
 
-1. `git checkout monfort-restraint-polish-phase-1 && git pull`, `npm install`, `npm run dev`.
+1. `git checkout monfort-restraint-polish-phase-1 && git pull`, `npm install`, `npm run dev`. Then confirm the bundled `ui-ux-pro-max` skill is available (see §1.5) and `python --version` works (optional, for the skill's scripts).
 2. Re-run the §9 benchmark to confirm the baseline matches §5 (sanity that you're looking at the same build).
 3. Ask the user the §7 decisions (or confirm they want Phase 1 first).
 4. On approval, implement **Phase 1 only** (1A→1B→1C→1D), re-run the §9 probe to hit the Phase-1 success metrics, show before/after screenshots, then stop for review.
