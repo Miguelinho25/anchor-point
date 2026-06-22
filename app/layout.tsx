@@ -3,6 +3,8 @@ import { Josefin_Sans, Inter } from 'next/font/google'
 import './globals.css'
 import LenisProvider from '@/components/providers/LenisProvider'
 import Stage from '@/components/Stage/Stage'
+import Header from '@/components/site/Header'
+import Footer from '@/components/site/Footer'
 
 const josefin = Josefin_Sans({
   subsets: ['latin'],
@@ -37,9 +39,12 @@ export default function RootLayout({
         <LenisProvider>
           {/* WebGL canvas — fixed behind everything, persists across route changes */}
           <Stage />
+          {/* Site shell — fixed header floats above; footer closes every route. */}
+          <Header />
           {/* DOM content — z-index above canvas */}
           <div style={{ position: 'relative', zIndex: 1 }}>
             {children}
+            <Footer />
           </div>
         </LenisProvider>
       </body>

@@ -4,6 +4,7 @@ import { useEffect, useRef, Fragment } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { scrollStore } from '@/lib/scrollStore'
+import FinalCTA from '@/components/site/FinalCTA'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -703,6 +704,9 @@ export default function Home() {
 
       </div>
     </div>
+
+    {/* Doors open — the website begins where the film ends */}
+    <FinalCTA />
     </>
   )
 }
