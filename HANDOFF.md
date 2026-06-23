@@ -33,6 +33,51 @@ Anchor Point is a **finished, committed, fully-merged** product homepage for a m
 
 ---
 
+## 0.5 THE STANDARD & THE GOAL (creative North Star — read before judging any work)
+
+**The benchmark is [mont-fort.com](https://mont-fort.com/).** It was viewed live on 2026-06-23 (Chrome).
+Earlier notes assumed it was a *dark* site — **that was wrong.** What it actually is:
+
+- **Light, airy, and evolving.** It opens on a real, expensive photograph of snow peaks above cloud
+  (pale blue-grey/white), then **descends through real environments as you scroll** — mountains →
+  storm clouds → **a real oil tanker cutting through a moody grey sea** for its "Montfort Maritime"
+  division. The palette *changes with the story*; premium is earned through **contrast**, not one mood.
+- **Real cinematography**, extreme typographic restraint (one thin wide-tracked face, vast negative
+  space), scroll-synced text reveals, and **authored dissolves** (white interstitials, camera moving
+  *into* the photo). It says almost nothing and trusts the imagery.
+- ⚓ Note: Montfort literally has a **Maritime** arm shown with **real ship-at-sea footage** — we are
+  competing in their exact visual territory, against real footage. That raises our bar specifically.
+
+**Honest standing (brutal scorecard, 1–10, Montfort ≈ 9.5):** Anchor Point ≈ **6 overall.** They beat
+us decisively on **production value / real imagery (us ~4)**, **evolving light/palette (us one-note
+dark)**, and **serene restraint**. **We beat them on narrative concept (chaos→order→hidden
+intelligence→unified reveal) and interactive/WebGL originality.** Strong, original, premium — but not
+yet a *masterpiece*. The gap is **production value + restraint**, both buildable without rebuilding
+anything we have.
+
+**THE GOAL (the trajectory every future chapter serves):** turn Anchor Point's *described* maritime
+world into a *real, physical* one — through **real media (footage), 3D objects, and tactile interactive
+surfaces** — darker and more interactive than Montfort, but with the same coherence. **The CH00 WebGL
+water POC (`HANDOFF_WATER_LAB.md`) is STEP ONE** — it proves whether a *physical, interactive* element
+can look premium in our dark world. If it does, the same principle rolls forward: real footage / 3D
+vessels replace abstract gestures where it counts, the **CH03 real vessel reveal** becomes the biggest
+single luxury-gap closer, and CH05 lands harder because everything before it was *real*.
+
+**THE RULE that protects the climb — ADD BY SUBSTITUTION.** Phases 1–2 got us here by *subtracting*
+(killed the cyan/HUD/loops/bars). As we now *add* media/3D, the failure mode **inverts**: the risk
+becomes "too much, incoherent — a showreel of effects." Montfort's real power is that **every element
+serves one calm world and nothing competes.** So: **each new real thing REPLACES an abstract thing — it
+never piles on top.** Water replaces the flat ocean; a real vessel replaces particle-gesturing; 3D
+replaces a diagram. After every addition, judge the *whole* against one test: **"does it still feel like
+one serene world?"** Keep the Phase 1–2 restraint sacred. Add by substitution, judge visually, climb.
+
+Highest-leverage gap-closers (in order): (1) **one real cinematic vessel/sea shot** (CH03); (2) **let
+the palette breathe** — don't hold abyss-black for 1,500vh; a lighter surface before sinking dark makes
+the dark *mean* something; (3) **authored cross-dissolves** between chapters (Phase 3B); (4) **subtract
+more** toward serenity; (5) re-interrogate whether the display typeface is *timeless-luxury* enough.
+
+---
+
 ## 1. Git state & how to resume
 
 - **Remote:** `https://github.com/Miguelinho25/anchor-point.git` (private).

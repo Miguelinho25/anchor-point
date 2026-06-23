@@ -150,7 +150,9 @@ and wants a **masterpiece, not a rushed gimmick** — give the POC a full focuse
 
 1. `git checkout master && git pull`, `npm install`, `npm run dev`. Confirm the site runs and the
    accepted CH00 ocean still renders (don't disturb it).
-2. Re-read this file + `HANDOFF.md` §0–3. Optionally open https://madebyevan.com/webgl-water/ for
-   reference (do not copy its code — see licensing above).
+2. Re-read this file + `HANDOFF.md` §0–3 — **especially `HANDOFF.md` §0.5 "The Standard & The Goal"**,
+   which sets the Mont-Fort benchmark and frames this POC as **step one** of turning the described
+   maritime world into a real, physical one (add-by-substitution). Optionally open
+   https://madebyevan.com/webgl-water/ for reference (do not copy its code — see licensing above).
 3. Create `experiment/water-lab`, build ONLY the FIRST POC STEP above, then stop and have the user
    judge it visually against the pass/fail criteria. Do not integrate or promote until it passes.
