@@ -1,11 +1,16 @@
 # Anchor Point — Cross-Device Handoff
 
-> **⚓ LATEST (2026-06-23):** the **CH00 living-ocean backdrop is DONE and MERGED to `master`**
-> (HEAD `3519925`). A cursor-wake interaction (Step 1B) was tried and **rejected + removed** — the
-> shipped state is the **living-still ocean only**: a dark-ocean still with slow autonomous
-> drift/breathe, a deeper edge vignette, a CH00-only fade, and **no mouse/cursor interaction**.
-> **No pending review and no open branch work.** Read **`HANDOFF_CH00_OCEAN.md`** for exactly what
-> that step covers and the next CH00 options.
+> **⚓ LATEST (2026-06-23, laptop session):** an **About / Meet-the-team page is DONE and MERGED to
+> `master`** (HEAD `f030a25`) — `/about` route + an `About` nav item + founder cards for Miguel Morett,
+> Argenis Omaña, Ansh Sahadew (monogram initials only; copy + real photos to be refined later). Before
+> that, the **CH00 living-ocean backdrop** shipped (a dark-ocean still with slow drift/breathe, edge
+> vignette, CH00-only fade, **no mouse interaction**; a cursor-wake experiment was tried and **rejected
+> + removed**). **No pending code work and nothing awaiting review.**
+>
+> **NEXT (planned, not started):** an experimental **Evan Wallace-inspired interactive dark-water surface
+> for CH00** — full plan + first-POC spec + a VERIFIED licensing finding are in **`HANDOFF_WATER_LAB.md`**.
+> It is an all-or-nothing focused-shader session, deferred to a fresh Claude with full budget. Read that
+> file before starting it. Also see **`HANDOFF_CH00_OCEAN.md`** for the shipped CH00 ocean details.
 
 > **Purpose of this file:** let a fresh Claude on the home PC continue this project at the same quality. Read it top to bottom before touching anything.
 >
