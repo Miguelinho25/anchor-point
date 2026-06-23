@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
-const SIM_SIZE = 256
-const BACKDROP_SIM_SIZE = 192
-const MAX_PIXEL_RATIO = 1.5
-const BACKDROP_MAX_PIXEL_RATIO = 1
+const SIM_SIZE = 320
+const BACKDROP_SIM_SIZE = 320
+const MAX_PIXEL_RATIO = 1.75
+const BACKDROP_MAX_PIXEL_RATIO = 1.25
 const POINTER_RADIUS = 0.018
 const POINTER_STRENGTH = 0.026
 const WAVE_SPEED = 0.18
@@ -263,7 +263,17 @@ void main() {
   float hR = texture2D(uState, safeUv(vUv + vec2(uTexel.x, 0.0))).r;
   float hD = texture2D(uState, safeUv(vUv - vec2(0.0, uTexel.y))).r;
   float hU = texture2D(uState, safeUv(vUv + vec2(0.0, uTexel.y))).r;
-  vec2 grad = vec2(hR - hL, hU - hD);
+  float hLL = texture2D(uState, safeUv(vUv - vec2(uTexel.x * 2.0, 0.0))).r;
+  float hRR = texture2D(uState, safeUv(vUv + vec2(uTexel.x * 2.0, 0.0))).r;
+  float hDD = texture2D(uState, safeUv(vUv - vec2(0.0, uTexel.y * 2.0))).r;
+  float hUU = texture2D(uState, safeUv(vUv + vec2(0.0, uTexel.y * 2.0))).r;
+  float hUL = texture2D(uState, safeUv(vUv + vec2(-uTexel.x, uTexel.y))).r;
+  float hUR = texture2D(uState, safeUv(vUv + vec2(uTexel.x, uTexel.y))).r;
+  float hDL = texture2D(uState, safeUv(vUv + vec2(-uTexel.x, -uTexel.y))).r;
+  float hDR = texture2D(uState, safeUv(vUv + vec2(uTexel.x, -uTexel.y))).r;
+  vec2 gradAxis = vec2((hR - hL) * 0.76 + (hRR - hLL) * 0.12, (hU - hD) * 0.76 + (hUU - hDD) * 0.12);
+  vec2 gradDiag = vec2((hUR + hDR - hUL - hDL) * 0.18, (hUR + hUL - hDR - hDL) * 0.18);
+  vec2 grad = gradAxis + gradDiag;
   float startup = smoothstep(0.0, 1.0, uStartupFade);
   float ambientStrength = uAmbientStrength * startup;
   float reliefStrength = uAmbientReliefStrength * startup;
@@ -285,11 +295,11 @@ void main() {
   vec2 waterGrad = grad + ambientGrad;
 
   vec2 slowDrift = vec2(sin(uTime * 0.032), cos(uTime * 0.027)) * 0.003;
-  vec2 distortedUv = safeUv(vUv + waterGrad * 0.034 + ambientDrift + slowDrift);
+  vec2 distortedUv = safeUv(vUv + waterGrad * 0.028 + ambientDrift + slowDrift);
   vec3 base = texture2D(uBase, distortedUv).rgb;
   base = mix(abyss, base * 0.24 + deep * 0.14, 0.52);
 
-  vec3 normal = normalize(vec3(-waterGrad.x * 34.0, 1.0, -waterGrad.y * 34.0));
+  vec3 normal = normalize(vec3(-waterGrad.x * 31.0, 1.0, -waterGrad.y * 31.0));
   vec3 lightDir = normalize(vec3(-0.28, 0.62, 0.73));
   float light = max(dot(normal, lightDir), 0.0);
   float slope = length(waterGrad) * 20.0;
