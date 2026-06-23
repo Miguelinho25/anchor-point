@@ -1,287 +1,352 @@
 # Anchor Point — Cross-Device Handoff
 
-> **⚓ LATEST (2026-06-23, laptop session):** an **About / Meet-the-team page is DONE and MERGED to
-> `master`** (HEAD `f030a25`) — `/about` route + an `About` nav item + founder cards for Miguel Morett,
-> Argenis Omaña, Ansh Sahadew (monogram initials only; copy + real photos to be refined later). Before
-> that, the **CH00 living-ocean backdrop** shipped (a dark-ocean still with slow drift/breathe, edge
-> vignette, CH00-only fade, **no mouse interaction**; a cursor-wake experiment was tried and **rejected
-> + removed**). **No pending code work and nothing awaiting review.**
->
-> **NEXT (planned, not started):** an experimental **Evan Wallace-inspired interactive dark-water surface
-> for CH00** — full plan + first-POC spec + a VERIFIED licensing finding are in **`HANDOFF_WATER_LAB.md`**.
-> It is an all-or-nothing focused-shader session, deferred to a fresh Claude with full budget. Read that
-> file before starting it. Also see **`HANDOFF_CH00_OCEAN.md`** for the shipped CH00 ocean details.
+> **Latest status: 2026-06-23, end of laptop/Codex session.**
+> The accepted code baseline is `3c291b4`, which contains the approved CH00 WebGL water foundation plus the ripple-quality hotfix.
+> This handoff itself may be a newer docs-only commit on `master`.
+> Before this handoff update, the local branch was `ch01-underwater-transition`, clean, pointing at the same code commit as `master`.
+> The local dev server was stopped; port `3000` was confirmed clear.
 
-> **Purpose of this file:** let a fresh Claude on the home PC continue this project at the same quality. Read it top to bottom before touching anything.
->
-> **Written:** 2026-06-22 (laptop session — "site shell" phase complete).
-> **Author context:** Claude (Opus 4.8) that built the navigation/CTA/footer shell on top of the now-merged Mont-Fort restraint polish.
-> **Supersedes** the previous handoff (which was written when *nothing* was implemented yet). Everything that handoff called "the plan" is now **done and merged to `master`**.
+This file is the first thing a fresh Claude/Codex should read before touching the project.
 
 ---
 
-## 0. READ-ME-FIRST / current state in one paragraph
+## 0. Current State In One Paragraph
 
-Anchor Point is a **finished, committed, fully-merged** product homepage for a maritime-intelligence software company. It has two layers: (1) the **CH00–CH05 cinematic scroll film** (Next.js + raw Three.js/WebGL + GSAP/Lenis) — the hero experience; and (2) a **quiet premium site shell around it** — fixed header/nav, a final "doors open" CTA after CH05, a footer, and four sub-routes (`/anchor-voyage`, `/anchor-ai`, `/contact`, **`/about`**). CH00 has a **living-ocean backdrop** (a dark-ocean still with slow autonomous drift/breathe behind the WebGL canvas, homepage + CH00 only — no mouse interaction), and an **About / Meet-the-team page** (`/about` + `About` nav item + founder cards) is shipped. **All of it is on `master`** (HEAD `97aed33`; site code at `f030a25`) and pushed to GitHub. There is **no pending code work** and **nothing waiting to be reviewed**. The most recent activity was a **plan** for an experimental Evan Wallace-inspired interactive dark-water surface for CH00 — see **`HANDOFF_WATER_LAB.md`** (planned, not started). Other deferred options: **Phase 3** (chapter tempo / designed dissolves / texture). Do not begin either without the user. (A past styling scare — the shell briefly rendering unstyled after a merge — was a **stale Turbopack compilation, not a code bug**; see §7.)
-
-**Hard rules the user has held throughout (do not violate):**
-- Do **not** redesign the cinematic film. Every change is a *removal or a calming*, not a rebuild.
-- Do **not** remove or rebuild the WebGL foundation; do **not** touch CH00–CH05 animation/scroll unless explicitly asked.
-- Do **not** install new packages — **no** framer-motion, motion, Spline, or any animation library. Stack is fixed: Next.js, React, GSAP/ScrollTrigger, Lenis, Three.js/WebGL.
-- Do **not** invent product claims, fake clients, stats, testimonials, dashboards, or media.
-- Do **not** commit, merge to `master`, or delete branches without explicit approval. The user reviews **visually** before every commit.
+Anchor Point is a premium dark maritime-intelligence website with a cinematic CH00-CH05 homepage, a restrained site shell, functioning placeholder routes, an About page, an isolated `/water-lab`, and the approved CH00 WebGL water surface now merged into `master`. The accepted homepage starts with a dark physical WebGL water surface, faint vessel/data particles, then proceeds through the existing cinematic narrative into AnchorVoyage, Anchor AI, and the final Anchor Point operating-system reveal. The most recent accepted code is the water ripple quality hotfix at `3c291b4`. A first CH00 -> CH01 underwater-transition attempt was tried on `ch01-underwater-transition`, rejected, and fully reverted; do not restart it until the user gives a new prompt.
 
 ---
 
-## 0.5 THE STANDARD & THE GOAL (creative North Star — read before judging any work)
+## 1. Hard Rules
 
-**⚠️ CRITICAL DISTINCTION — Mont-Fort is the bar for QUALITY / CRAFT, NOT a visual template.**
-Anchor Point **keeps its current identity**: the dark `--abyss` / instrument-blue palette, the
-typography, the whole current vibe — **all locked, not up for change.** We are matching Mont-Fort's
-*level of craft, restraint, and production value*, expressed entirely in **our own dark maritime
-world.** Do **NOT** lighten the palette, swap the typeface, or imitate Mont-Fort's light/airy look.
-Same league, different world. (This was the user's explicit instruction — don't mix it up.)
-
-**The benchmark is [mont-fort.com](https://mont-fort.com/).** It was viewed live on 2026-06-23 (Chrome).
-Earlier notes assumed it was a *dark* site — **that was wrong.** What it actually is:
-
-- **Light, airy, and evolving.** It opens on a real, expensive photograph of snow peaks above cloud
-  (pale blue-grey/white), then **descends through real environments as you scroll** — mountains →
-  storm clouds → **a real oil tanker cutting through a moody grey sea** for its "Montfort Maritime"
-  division. The palette *changes with the story*; premium is earned through **contrast**, not one mood.
-- **Real cinematography**, extreme typographic restraint (one thin wide-tracked face, vast negative
-  space), scroll-synced text reveals, and **authored dissolves** (white interstitials, camera moving
-  *into* the photo). It says almost nothing and trusts the imagery.
-- ⚓ Note: Montfort literally has a **Maritime** arm shown with **real ship-at-sea footage** — we are
-  competing in their exact visual territory, against real footage. That raises our bar specifically.
-
-**Honest standing (brutal scorecard, 1–10, Montfort ≈ 9.5):** Anchor Point ≈ **6 overall.** They beat
-us decisively on **production value / real imagery (us ~4)** and **serene restraint**. (Their palette
-*evolves with light*; ours is uniformly dark — but **that uniform dark is our identity, which we keep.**
-The craft gap is making our dark world feel as *real and produced* as theirs — **not** making it
-lighter.) **We beat them on narrative concept (chaos→order→hidden
-intelligence→unified reveal) and interactive/WebGL originality.** Strong, original, premium — but not
-yet a *masterpiece*. The gap is **production value + restraint**, both buildable without rebuilding
-anything we have.
-
-**THE GOAL (the trajectory every future chapter serves):** turn Anchor Point's *described* maritime
-world into a *real, physical* one — through **real media (footage), 3D objects, and tactile interactive
-surfaces** — darker and more interactive than Montfort, but with the same coherence. **The CH00 WebGL
-water POC (`HANDOFF_WATER_LAB.md`) is STEP ONE** — it proves whether a *physical, interactive* element
-can look premium in our dark world. If it does, the same principle rolls forward: real footage / 3D
-vessels replace abstract gestures where it counts, the **CH03 real vessel reveal** becomes the biggest
-single luxury-gap closer, and CH05 lands harder because everything before it was *real*.
-
-**THE RULE that protects the climb — ADD BY SUBSTITUTION.** Phases 1–2 got us here by *subtracting*
-(killed the cyan/HUD/loops/bars). As we now *add* media/3D, the failure mode **inverts**: the risk
-becomes "too much, incoherent — a showreel of effects." Montfort's real power is that **every element
-serves one calm world and nothing competes.** So: **each new real thing REPLACES an abstract thing — it
-never piles on top.** Water replaces the flat ocean; a real vessel replaces particle-gesturing; 3D
-replaces a diagram. After every addition, judge the *whole* against one test: **"does it still feel like
-one serene world?"** Keep the Phase 1–2 restraint sacred. Add by substitution, judge visually, climb.
-
-Highest-leverage gap-closers — all **within our existing dark identity** (in order): (1) **one real
-cinematic vessel/sea shot** (CH03) — the biggest single move; (2) **real media / 3D by substitution**
-to raise production value; (3) **authored cross-dissolves** between chapters (Phase 3B); (4) **subtract
-more** toward serenity. (Tonal *depth* may deepen strictly *within* the dark palette — abyss ↔ deep
-navy ↔ faint surface sheen — but **never go light, and never change the palette or typeface.** The
-current colours and type are the identity and stay.)
+- Do not work directly on `master` unless the user explicitly asks for a merge or a tiny approved hotfix.
+- Do not commit, push, or merge until the user visually approves.
+- Do not delete feature branches unless the user explicitly asks.
+- Do not install packages unless the user explicitly approves.
+- Do not add Framer Motion, Motion, Spline, or new animation libraries.
+- Do not copy Evan Wallace WebGL Water source code. The water work must remain original implementation inspired only by general heightfield concepts.
+- Do not invent fake clients, metrics, testimonials, dashboards, product claims, or media.
+- Do not redesign CH00-CH05 casually. The film is the hero experience.
+- Keep `/water-lab` available as the isolated water experiment.
+- Keep the approved CH00 WebGL water on `master` intact unless the user gives a specific prompt.
 
 ---
 
-## 1. Git state & how to resume
+## 2. Git State
 
-- **Remote:** `https://github.com/Miguelinho25/anchor-point.git` (private).
-- **`master` = the live, complete site** at commit **`97aed33`** (the site code itself is at `f030a25`; `97aed33` is docs-only). Pushed. This is what to pull.
-- **Branch ladder (all merged into `master`, kept for history — do not delete):**
+Remote:
 
-| Commit | What |
-|---|---|
-| `97aed33` | Add WebGL water POC plan handoff (`HANDOFF_WATER_LAB.md`), docs only ← `master` HEAD |
-| `f030a25` | **Add About page (`/about`) + founder section + `About` nav item** |
-| `3519925` | Merge CH00 living-ocean backdrop |
-| `ba74eca` | Remove rejected CH00 cursor wake |
-| `a000663` | Add CH00 ocean atmosphere backdrop (the approved living-still base) |
-| `4811668` | Fix Three.js TypeScript declarations (`next build` typecheck now passes) |
-| `dc3f89a` | Build site shell navigation and CTA |
-| `37918cf` | Apply Phase 2 Mont-Fort restraint polish |
-| `b4752f0` | Apply Phase 1 Mont-Fort restraint polish |
-| `ddb61a9` | Bundle `ui-ux-pro-max` skill + dev-stack notes |
-| `abea77e` | First cross-device handoff |
-| `8da6efa` | CH05 operating-system reveal (original film baseline) |
+```bash
+https://github.com/Miguelinho25/anchor-point.git
+```
 
-- **Local/remote branches** (all merged into / behind `master`, kept for history — do not delete): `ch00-ocean-atmosphere-step0` (the CH00 ocean work, now merged), `build-typecheck-fix`, `monfort-restraint-polish-phase-1`, `montfort-restraint-polish-phase-2`, `site-shell-navigation-cta`, `ch05-operating-system-reveal` (historical). Plus **`site-shell-style-hotfix`** — a local diagnostic branch that ended up with **zero commits** (the styling issue needed no code change). It equals `master`; it is **not pushed** and can be ignored or deleted by the user.
+Current important commits:
 
-**To resume on the home PC:**
+| Commit | Status | Meaning |
+|---|---|---|
+| `3c291b4` | `master`, pushed | Improve WebGL water ripple quality |
+| `13f8168` | merged | Test WebGL water integration in CH00 |
+| `81408a1` | merged | Add isolated water-lab WebGL water experiment |
+| `5a78a8e` | merged | Clarify Mont-Fort standard and creative North Star |
+| `f030a25` | merged | Add About page and founder section |
+| `dc3f89a` | merged | Build site shell navigation and CTA |
+| `37918cf` | merged | Apply Phase 2 Mont-Fort restraint polish |
+| `b4752f0` | merged | Apply Phase 1 Mont-Fort restraint polish |
+
+Project state immediately before this handoff docs update:
+
+```text
+branch: ch01-underwater-transition
+working tree: clean
+HEAD: 3c291b4
+dev server: stopped
+port 3000: clear
+```
+
+Important branch note:
+
+- `ch01-underwater-transition` currently contains no unique committed work. It was created from latest `master`, used for a rejected attempt, then restored clean.
+- Keep it or discard it later only if the user asks. For a fresh new attempt, it is usually safer to create a new branch from `master`.
+
+To resume safely:
+
 ```bash
 git fetch origin
 git checkout master
-git pull origin master          # gets this HANDOFF.md + the full shell
-npm install                     # if node_modules absent
-npm run dev                     # http://localhost:3000
+git pull origin master
+npm install
+npm run dev
 ```
-**Start any new work on a fresh branch off `master`** (e.g. `git checkout -b phase-3-tempo`). Don't work directly on `master`.
+
+Start new work from a fresh branch:
+
+```bash
+git checkout -b <new-feature-branch>
+```
 
 ---
 
-## 1.5 Bundled skills & dev tooling
+## 3. What Is Shipped
 
-**The `ui-ux-pro-max` design-intelligence skill is bundled in this repo** at `.claude/skills/ui-ux-pro-max/` so it travels with the clone. When this repo is the working directory, Claude Code **auto-discovers it as a project skill** — no install step. Use it for any UI/typography/palette/accessibility decision (it has 96 palettes, 57 font pairings, 99 UX guidelines, a Next.js/React/Tailwind stack profile). The `scripts/*.py` searchers need **Python 3**; if absent, the `SKILL.md` + `data/*.csv` are still readable directly.
+### Cinematic Homepage
 
-**Not bundled:** plugin/environment skills (`docx`, `pdf`, `code-review`, `verify`, `security-review`, etc.) are not project files — install via your normal plugin setup on the PC if wanted.
+The homepage remains the core product experience:
 
----
-
-## 2. What the site is now
-
-**Anchor Point** = the parent operating system for maritime intelligence. Two sub-products: **AnchorVoyage** (operational layer) and **Anchor AI** (intelligence layer).
-
-**Layer 1 — the cinematic film (unchanged hero):**
-
-| Chapter | Beat |
+| Chapter | Current role |
 |---|---|
-| CH00 | "42,000 vessels are moving right now… almost none can see each other." Ocean-flow chaos. |
-| CH01 | Vessels snap to real shipping lanes. Positioning statement *"The intelligence layer for global shipping."* writes in (Phase 2 made this the hero, **not** the brand wordmark — see §5). |
-| CH02 | 8 incompatible data systems converge on a hero vessel. "The answers already exist…" |
-| CH03 | 4 modules radiate out; **AnchorVoyage** wordmark resolves. |
-| CH04 | **Anchor AI** live intelligence layer: scan/sonar/route recalculation. |
-| CH05 | AnchorVoyage + Anchor AI unify into **Anchor Point**; boundary seals; held final frame. The only large brand reveal. |
+| CH00 | Dark physical WebGL ocean surface + faint vessel/data particles + opening copy |
+| CH01 | The world organizes into maritime intelligence; statement: "The intelligence layer for global shipping." |
+| CH02 | Fragmented maritime data converges around one vessel |
+| CH03 | AnchorVoyage module reveal |
+| CH04 | Anchor AI live intelligence layer |
+| CH05 | Anchor Point parent operating-system reveal |
 
-**Layer 2 — the site shell (NEW this phase):**
-- **Fixed header / nav** — wordmark left; `AnchorVoyage · Anchor AI · Vision · About` + a framed `Request Access` right. Transparent at the very top (clean over CH00); slides away on scroll-down, returns with a faint scrim on scroll-up.
-- **Final CTA** — a "doors open" section in normal flow **directly after CH05's film**: eyebrow "Enter the system" → framed `Request Access` → `Explore AnchorVoyage · Explore Anchor AI · Contact`.
-- **Footer** — brand + existing tagline, product/contact links, `© 2026 Anchor Point · Legal` base.
-- **Placeholder routes** — `/anchor-voyage`, `/anchor-ai`, `/contact`. Minimal, brand-consistent, each with an honest "In development" status. They exist to make nav functional and prepare the architecture — **not** full product pages.
-- **About page** (`/about`) — a real editorial company page (hero → how it started → founder cards → vision → CTA). Founders **Miguel Morett · Argenis Omaña · Ansh Sahadew**, monogram initials only. **Approved as the base; copy + real photos to be refined later** (do not rewrite or add photos without the user). Lives in `app/about/page.tsx`; styles in `globals.css` (`.about-*`).
+### Site Shell
+
+Merged and working:
+
+- Fixed premium header/nav
+- Final CTA after CH05
+- Footer
+- `/anchor-voyage`
+- `/anchor-ai`
+- `/contact`
+- `/about`
+
+The `About` page is approved as the current base. It introduces Anchor Point as founded by three university-student co-founders:
+
+- Miguel Morett
+- Argenis Omaña
+- Ansh Sahadew
+
+Do not add photos or rewrite the About page unless asked. Real photos and copy refinement are future work.
+
+### Water Work
+
+Merged and working:
+
+- Hidden `/water-lab` route.
+- Original WebGL heightfield water experiment.
+- CH00 integration using the WebGL water as the primary dark ocean foundation.
+- Fallback/static ocean base retained.
+- Ripple quality hotfix merged into `master`.
+
+`/water-lab` remains available and should not be added to nav.
 
 ---
 
-## 3. Tech stack & architecture
+## 4. Water Implementation Notes
 
-- **Next.js 16.2.9** App Router, **TypeScript**, **Tailwind CSS 4**, **Turbopack**, port **3000**.
-  - ⚠️ Newer than training data — see `anchor-point/AGENTS.md`; check `node_modules/next/dist/docs/` before using unfamiliar Next APIs. (Routing/`next/link`/`app/<route>/page.tsx` are standard App Router and confirmed.)
-- **Three.js v0.184.0**, raw (no R3F). Use `THREE.Timer`, **not** `THREE.Clock` (deprecated r184+).
-- **GSAP + ScrollTrigger** — one master `onUpdate` per chapter, `scrub: 2.5`, smootherstep easing.
-- **Lenis v1.3.23** — `duration: 1.6`, expo easing, driven by `gsap.ticker`.
-- **Fonts (two faces, set in `app/layout.tsx` via `next/font/google`):**
-  - `Josefin_Sans` → `--font-display` — applied to `<html>`; all hero wordmarks, statements, brand marks.
-  - `Inter` → `--font-ui` — **added in Phase 2** for small labels / data / interface text only.
-  - ⚠️ **Turbopack/Lightning-CSS gotcha:** `font-family: var(--font-ui)` is silently dropped from compiled CSS. **Always write the literal first:** `font-family: "Inter", var(--font-ui), system-ui, sans-serif;` (the grouped label rules in `globals.css` already do this).
+Key files:
 
-### Key files
 | File | Role |
 |---|---|
-| `app/page.tsx` | All chapter JSX + refs + GSAP ScrollTrigger logic in one `useEffect`. Renders `<FinalCTA/>` after CH05's film. |
-| `app/layout.tsx` | Fonts + LenisProvider + `<Stage/>` (fixed canvas z0) + `<Header/>` + content wrapper (z1) containing `{children}` + `<Footer/>`. |
-| `app/globals.css` | All styling. `:root` tokens (§4). Per-chapter rulesets + the **SITE SHELL** block at the bottom (header/CTA/footer/placeholder). |
-| `components/Stage/Stage.tsx` | The WebGL engine (shaders, vessel field, route lines + CH01 settle + CH04 recalculation, hero core, rings, sonar, scan arc, CH05 system seal, camera dolly). |
-| `components/site/Header.tsx` | Client component. Fixed nav; scroll-direction hide/show via a passive `window.scrollY` listener (no library). |
-| `components/site/Footer.tsx` | Server component. Restrained footer. |
-| `components/site/FinalCTA.tsx` | The post-CH05 CTA section. |
-| `components/site/PlaceholderPage.tsx` | Shared minimal page (eyebrow/title/sub/status/optional CTA). |
-| `app/anchor-voyage/`, `app/anchor-ai/`, `app/contact/` | `page.tsx` placeholder routes using `PlaceholderPage`. |
-| `lib/scrollStore.ts` | Module singleton bridging DOM↔WebGL: `progress, ch02–ch05Progress`. GSAP writes, Three.js reads, every frame. |
-| `components/providers/LenisProvider.tsx` | Lenis setup. |
-| `.claude/launch.json` | Preview server config — name **`anchor-point-dev`**, port 3000 (runs `sh -c "cd 'anchor-point' && npm run dev"`; lives in the *parent* `Claude Code/.claude/`, not in the repo). |
+| `components/experimental/WaterSurface.tsx` | Self-contained original WebGL water component used by `/water-lab` and CH00 backdrop mode |
+| `app/water-lab/page.tsx` | Hidden isolated test route |
+| `components/site/OceanBackdrop.tsx` | Homepage CH00 water/backdrop layering and fallback |
+| `components/Stage/Stage.tsx` | Existing cinematic vessel/route WebGL stage |
 
-### Scroll math (now includes the shell)
-- 5 film sections × **300vh** = **1500vh** (= **15 viewport-heights**). Each: outer `height:300vh;position:relative`; inner stage `position:sticky;top:0;height:100vh`.
-- **The CTA + footer add height in normal flow *after* CH05.** Total document ≈ **16.1 viewport-heights** (15 film + ~0.8 CTA `min-height:80vh` + ~0.3 footer).
-- **Crucial:** each chapter's ScrollTrigger is self-contained (`start: top top → end: bottom bottom`), so the film's timing is **independent of what comes after**. The CTA begins at **exactly 15vh**, i.e. the instant CH05's held final frame ends — "doors open." **No scroll-architecture change was needed** to add the shell.
-- At **1440×900**: film = 13500px; CTA starts at 13500px. CH05 reveal lands by ~progress 0.84 (verified: wordmark opacity 0.96, eyebrow 0.55, tagline 0.62).
+Important accepted behavior:
+
+- CH00 water should feel dark, physical, premium, and restrained.
+- Mouse interaction should feel like local disturbance on the same water surface.
+- No bright pool look.
+- No toy ripple look.
+- No global cursor parallax/wake. That earlier cursor experiment was rejected and must not return.
+- CH00 particles should remain faint but visible.
+- Opening text remains dominant and readable.
+- `/water-lab` remains visually separate for testing.
+
+Ripple quality hotfix at `3c291b4`:
+
+- Increased sim resolution for the lab/backdrop.
+- Increased pixel ratio modestly.
+- Smoothed the water normal calculation so mouse ripples no longer look chunky/pixelated.
+- Build passed before merge.
 
 ---
 
-## 4. Design tokens (`globals.css :root`)
+## 5. Rejected Work
 
+### Rejected: Old CH00 Cursor Wake
+
+An earlier cursor/wake experiment before the WebGL water was rejected because it felt cheap, like moving a poster/background rather than disturbing a physical surface. Do not reintroduce it.
+
+### Rejected: Final Shader Unification Tweak
+
+A shader tweak intended to unify ambient lighting and ripple normals made the water worse and pixelated. It was reverted before merging the CH00 water integration. The accepted baseline is `13f8168`, followed by the approved quality hotfix `3c291b4`.
+
+### Rejected: CH00 -> CH01 Underwater Transition Attempt
+
+Branch used:
+
+```text
+ch01-underwater-transition
 ```
---abyss  #04121A   canvas bg            --haze  #5A86A6   labels (UI face)
---deep   #0A2A3A   panels/depth         --ice   #BFD6E6   data / dim text
---steel  #2D628C   structure/hairlines  --white #F3F8FB   headlines
---signal #18E0FF   THE accent — "one use: live intelligence" (radar cyan)
-```
-**The colour rule the whole design now follows (Phase 1 enforced it):** cyan = live/active only (WebGL hero core/scan + the single status dot per scene). Everything else → `--white` headlines, `--ice` data, `--haze` labels. The shell honours this — its one cyan touch is a soft glow on the CTA `Request Access` hover, nothing more.
 
----
+What was attempted:
 
-## 5. What's been completed (so you don't redo it)
+- CH00 water receding upward during scroll.
+- DOM underwater fog/volume overlay.
+- Stage particle/current changes.
+- Shared pointer signal from WaterSurface to Stage.
+- CH01 routes/particles reframed as underwater currents.
 
-**Phase 1 — restraint polish (`b4752f0`):** demoted ~14 cyan-as-text selectors to haze/ice; removed 4 infinite `@keyframes` and the dashboard bars (`.frag-bar`, `.mod-bars`, `.ai-sig-bar`); standardised micro-labels to 10px/400/0.18em/haze. Result: ≤1 ambient motion per chapter, zero animated bars.
+Why user rejected it:
 
-**Phase 2 — restraint polish (`37918cf`):**
-- **CH01↔CH05 name collision resolved (Option A):** CH01's hero is now the *positioning statement* "The intelligence layer for global shipping." (with a scroll-synced char reveal + a WebGL route-settle in `Stage.tsx`). The big "Anchor Point" wordmark is now spent **only** in CH05.
-- **Wordmark hierarchy unified:** children (AnchorVoyage, Anchor AI) share one tier — 64px/200/0.28em/ice/no-glow; parent (Anchor Point) is dominant — 80px/200/0.20em/white/the only glow.
-- **Inter** added as the secondary UI face for labels/data.
-- **CH04 decrowded** (4 signals kept but quiet/dim).
+- Did not feel like sinking underwater.
+- CH01 became visually worse.
+- Route/current animation looked buggy.
+- Particles/routes became too obvious and graph-like.
+- Felt like an effect layer, not an underwater world.
+- Did not feel premium/cinematic enough.
 
-**Site shell (`dc3f89a`):** Header, FinalCTA, Footer, PlaceholderPage components; `/anchor-voyage`, `/anchor-ai`, `/contact` routes; wired into `layout.tsx`/`page.tsx`; ~360 lines of shell CSS appended to `globals.css`. Verified at 1440×900 and 1366×768 — no overflow, no console errors, CH00–CH05 untouched. (One **open decision** the user is aware of: **"Vision" in the nav currently routes to `/`** — the cinematic homepage *is* the manifesto/vision. If they later want a dedicated `/vision` page, that's a future item.)
+Action already taken:
 
----
-
-## 6. The site shell — how it behaves (reference)
-
-- **Header** (`components/site/Header.tsx`): `position:fixed; z-index:50`. A passive scroll listener compares `window.scrollY` to the last value: `< 64px` → visible + transparent (CH00 stays clean); scrolling down → `translateY(-118%)` hidden; scrolling up → visible with a faint top scrim (`is-scrolled`). Pure CSS transition, no animation library. Nav links keep brand casing (AnchorVoyage / Anchor AI); `Request Access` is a hairline-framed link, never a bright button.
-- **FinalCTA** (`components/site/FinalCTA.tsx`): plain section in `page.tsx` after the CH05 film. Background `transparent → abyss` lets the last WebGL frame bleed in then seals to solid — the "doors open" read. Primary action is display-face but capped ~2.4rem (well below CH05's ~5rem) so CH05 stays the climax.
-- **Footer / placeholder pages**: server components; abyss background with a strong scrim over the live sea on sub-pages. All small labels use the literal-`"Inter"` font rule.
-
----
-
-## 7. ⚠️ THE STALE-CSS INCIDENT — read this before "fixing" any unstyled-shell scare
-
-**What happened:** right after merging the shell into `master`, the header/CTA/footer briefly rendered as **raw unstyled text** (run-together nav, stacked footer). It looked like the shell CSS had broken.
-
-**Root cause — it was NOT a code bug.** It was a **stale Turbopack dev compilation**:
-1. During the merge, `git checkout master` reverted `globals.css` to its pre-shell (819-line) version → Turbopack compiled *that* (no shell styles).
-2. The fast-forward `git merge` restored the 1178-line version **with** the shell, but the running dev server's file-watcher **missed the swap**, so it kept serving the stale, pre-shell CSS.
-
-**Proof it was staleness:** the *source* had all 45 shell selectors and a clean boundary; **no** CSS error in the build logs; the *compiled* stylesheet contained old `.ch05-wordmark` but none of `.site-header/.final-cta/.site-footer`. Forcing a recompile flipped the header from `static`→`fixed` and a **clean production build** (`rm -rf .next && next build`) emitted **all** shell CSS (`site-header`×4, `site-footer`×15, `final-cta`×11). `git status` was clean throughout — the committed source was always correct.
-
-**THE RULE (save yourself an hour):** if the shell (or any CSS) ever renders unstyled **after a git checkout/merge/branch-switch under a running dev server**, it is almost certainly stale Turbopack output. **Do not hunt for a CSS bug.** Fix it with a clean rebuild:
 ```bash
-# stop the dev server, then:
-rm -rf .next
-npm run dev          # fresh compile
+git restore app/globals.css app/page.tsx components/Stage/Stage.tsx components/experimental/WaterSurface.tsx components/site/OceanBackdrop.tsx lib/scrollStore.ts
 ```
-A fresh `npm run dev` after pulling is always correct — this only bites a server that was *running through* the file-swap.
+
+Result:
+
+```text
+working tree clean
+```
+
+Do not make a new CH01 underwater attempt until the user gives a new prompt.
 
 ---
 
-## 8. Known pitfalls
+## 6. Mont-Fort Standard And Creative North Star
 
-- **Stale Turbopack CSS after git ops** — see §7. The #1 gotcha now.
-- **Lenis stale scroll cap** — after anything that changes total scroll height over HMR, Lenis can cap scroll at the old height (new content unreachable). Hardened with deferred `ScrollTrigger.refresh()` (rAF + 600ms) in `page.tsx`. Adding the CTA/footer did **not** trip it (verified: deep CH05 reachable, reveal lands). Any future height change: full restart + hard reload to verify.
-- **Preview tool can't drive the film scroll on demand** — the headless preview throttles `requestAnimationFrame`, so the `gsap.ticker → Lenis → ScrollTrigger` scrub chain doesn't advance reliably from a programmatic `window.scrollTo` (position moves, scrub doesn't follow; synthetic wheel events don't register; the real Lenis instance isn't exposed). Computed-style checks are reliable at any position; the **actual scroll-through animation is best judged by the user's eyes**. (It worked opportunistically a few times earlier when the page was "warm" — don't rely on it.)
-- **Preview screenshots:** reliable at the very top (Y=0); often blank/partial mid-page (Lenis intercept). Use `preview_eval` computed styles for mid-page verification.
-- **No `@types/three`** (intentional — no packages). `next build` therefore **fails its TypeScript step** on `Stage.tsx` ("Could not find a declaration file for module 'three'"). This is **pre-existing and unrelated to the shell**; the *compile* succeeds (`✓ Compiled successfully`) — only the type-check gate fails. Don't "fix" by adding a package or churning the WebGL unless the user asks. (If they want production builds to pass, the clean fix is a one-line `declare module 'three'` ambient `.d.ts`, or `@types/three` — but that's a package and currently off-limits.)
-- **Two dev servers / `.next` lock:** Next refuses a second dev server against the same `.next`. Kill the stray Node PID (`lsof -ti:3000 | xargs kill -9`) before `npm run dev`, or use the preview tool's `preview_start` which reuses a running one.
+Mont-Fort is the standard for quality, restraint, production value, and cinematic craft.
 
----
+Critical distinction:
 
-## 9. How to verify your work (preview MCP)
+- Mont-Fort is **not** the visual template.
+- Anchor Point must keep its current identity: dark abyss/navy palette, instrument-blue restraint, cinematic maritime intelligence mood, current typography direction.
+- We are trying to reach Mont-Fort's level of craft while staying in Anchor Point's own world.
 
-1. `preview_start` name **`anchor-point-dev`** (or it may already be running — it reuses). URL `http://localhost:3000`.
-2. `preview_resize` to **1440×900**, then repeat at **1366×768**.
-3. **Shell checks** (reliable): `preview_eval` computed styles — e.g. `.site-header` → `position:fixed, zIndex:50`; `.final-cta` → `display:flex`, gradient bg, `minHeight:720px` at 900h; `.site-footer` → abyss bg + hairline border; label classes → `fontFamily` starts `"Inter"`. Screenshot the top for the header.
-4. **Film checks:** structure via `preview_eval` (5 `scroll-film*`, doc ≈16.1vh, `canvas` present, `html.lenis`, zero console errors). For the *animation*, rely on the user's visual scroll-through (see §8). If a warm-page read happens to work, deep CH05 is at `Y≈13.6×innerHeight`; wait ~3.4s for `scrub:2.5` to settle before reading opacity.
-5. **Routes:** `fetch('/anchor-voyage')` etc. should be 200; `PlaceholderPage` classes styled.
-6. `preview_stop` when done.
+The user's direction:
 
----
+- The current Anchor Point vibe, colors, and dark identity are correct.
+- Future upgrades should use real media, 3D objects, and physical interactive surfaces to raise production value.
+- The CH00 water project is step one of making the site feel more real and physical.
+- Add by substitution: each new real/premium element should replace an abstract weaker element, not pile on top.
+- Avoid a showreel of effects. Everything must feel like one serene world.
 
-## 10. Working style the user expects
+Highest-leverage future moves:
 
-- Honest, critical, evidence-based — **never invent**; separate "verified live" from "structural inference" from "judgement." (The §7 diagnosis is a model: prove the root cause, don't guess.)
-- High-effort, restrained, luxury-cinematic taste. Match that bar.
-- **Workflow discipline:** new work on a fresh branch off `master`; **show the user a visual result and get approval before every commit**; commit per logical unit with the repo's `Co-Authored-By` trailer; push the branch; merge to `master` **only** when the user says so; never delete branches without asking.
-- Persistent memory exists at `~/.claude/.../memory/` on each machine separately — **this HANDOFF.md is the cross-device source of truth.**
+1. Real cinematic vessel/sea shot or video for CH03/AnchorVoyage reveal.
+2. Carefully authored transitions between chapters.
+3. More physical surfaces and 3D/media by substitution.
+4. Continued restraint: remove anything that looks HUD-like, generic, graph-like, or gimmicky.
 
 ---
 
-## 11. Immediate next action for the home-PC Claude
+## 7. Tech Stack
 
-1. `git checkout master && git pull`, `npm install`, `npm run dev`. Confirm the `ui-ux-pro-max` skill is available (working *inside* this repo).
-2. **Sanity-check the live state** (don't assume): header styled and fixed at top with nav `AnchorVoyage · Anchor AI · Vision · About`; scroll down → CH00–CH05 film plays; past CH05 → the CTA "doors open"; footer below; `/anchor-voyage`, `/anchor-ai`, `/contact`, `/about` load styled. If the shell looks unstyled, it's §7 — `rm -rf .next && npm run dev`, **not** a code hunt.
-3. There is **no pending code work** and nothing awaiting review. Wait for the user's direction. The **most likely next topic is the WebGL water POC** — its full plan + verified licensing + first-step spec are in **`HANDOFF_WATER_LAB.md`** (read it before starting; it's an isolated `experiment/water-lab` build that must not touch master/`Stage.tsx`). Also deferred: **Phase 3** (3A tempo, 3B inter-chapter dissolves, 3C atmospheric texture). **Do not start either without the user.**
-4. Smaller open threads to raise if relevant: refining the **About** copy + adding real founder photos (approved-base only for now); the **"Vision" nav target** (currently `/`). (The `three` types build issue is already fixed — `4811668`.)
+- Next.js 16 App Router
+- React
+- TypeScript
+- GSAP + ScrollTrigger
+- Lenis
+- Three.js raw WebGL
+- Tailwind CSS 4
+- `next/font/google` using Josefin Sans and Inter
 
-Good luck. Keep it restrained.
+No new animation libraries.
+
+Key architecture:
+
+- `app/page.tsx`: CH00-CH05 DOM and ScrollTrigger orchestration.
+- `components/Stage/Stage.tsx`: main persistent WebGL vessel/route scene.
+- `components/experimental/WaterSurface.tsx`: separate water WebGL component.
+- `components/site/OceanBackdrop.tsx`: CH00 water/fallback layer.
+- `lib/scrollStore.ts`: DOM to WebGL progress singleton.
+- `components/providers/LenisProvider.tsx`: smooth scroll.
+
+Three.js note:
+
+- Use `THREE.Timer`, not `THREE.Clock`.
+
+Font/CSS note:
+
+- For Inter, use literal family first:
+
+```css
+font-family: "Inter", var(--font-ui), system-ui, sans-serif;
+```
+
+Using only `var(--font-ui)` can be dropped by the build pipeline.
+
+---
+
+## 8. Known Pitfalls
+
+### Stale Turbopack CSS
+
+After git checkout/merge while a dev server is running, Turbopack can serve stale CSS. If header/footer/CTA appears as raw unstyled text after a branch switch, do not assume the CSS is broken.
+
+Fix:
+
+```bash
+rm -rf .next
+npm run dev
+```
+
+### Next Font Network Build Failure
+
+`npm run build` can fail transiently while fetching Google font files. If the code did not change fonts and the error is a network/font fetch, retry once. This happened during the rejected CH01 attempt; the retry passed.
+
+### Browser Scroll Verification
+
+Lenis/GSAP scroll can be awkward in automated browser checks. Screenshots at top are reliable. Mid-scroll checks may require real visual review by the user. Use browser DOM/computed checks only as smoke tests; the user judges cinematic motion visually.
+
+### Server State
+
+At handoff time the dev server is stopped. If port `3000` is busy later:
+
+```bash
+lsof -tiTCP:3000 -sTCP:LISTEN | xargs -r kill
+npm run dev
+```
+
+---
+
+## 9. Verification Baseline
+
+Before starting new work, a fresh agent should verify:
+
+```bash
+git status --short --branch
+npm run build
+npm run dev
+```
+
+Routes that should exist:
+
+- `/`
+- `/about`
+- `/anchor-ai`
+- `/anchor-voyage`
+- `/contact`
+- `/water-lab`
+
+Visual baseline:
+
+- CH00 WebGL water loads without old background flash.
+- CH00 water is dark and alive at idle.
+- Mouse ripple quality is smooth, not pixelated.
+- CH00 particles are faint but visible.
+- CH01-CH05 still follow the accepted cinematic narrative.
+- `/water-lab` still works.
+
+---
+
+## 10. Recommended Next Step
+
+Do nothing until the user gives the next prompt.
+
+If the user returns to the CH00 -> CH01 underwater idea, do not revive the rejected approach. The next attempt needs a different concept, probably more cinematic/media-driven or camera/scene-based, not a DOM fog overlay plus route-current treatment. The user wants an actual premium underwater-world feeling, not obvious graph currents.
+
+If asked to start, create a fresh feature branch from `master`, inspect the current baseline, and plan before coding.
