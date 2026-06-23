@@ -10,6 +10,14 @@ const POINTER_STRENGTH = 0.026
 const WAVE_SPEED = 0.18
 const DAMPING = 0.986
 const SPECULAR_STRENGTH = 0.18
+const AMBIENT_WAVE_STRENGTH = 0.032
+const AMBIENT_WAVE_SPEED = 0.12
+const AMBIENT_WAVE_SCALE = 2.05
+const AMBIENT_SOURCE_STRENGTH = 0.006
+const AMBIENT_RENDER_STRENGTH = 0.018
+const AMBIENT_RELIEF_STRENGTH = 0.18
+const AMBIENT_SHADOW_STRENGTH = 0.62
+const AMBIENT_WAVE_DIRECTION = new THREE.Vector2(-1, 0.12).normalize()
 
 const LAB_CSS = `
 .water-lab {
@@ -143,21 +151,45 @@ uniform float uImpulse;
 uniform float uRadius;
 uniform float uWaveSpeed;
 uniform float uDamping;
+uniform float uTime;
+uniform float uAmbientStrength;
+uniform float uAmbientSpeed;
+uniform float uAmbientScale;
+uniform float uAmbientSourceStrength;
+uniform float uStartupFade;
+uniform vec2 uAmbientDirection;
 
 varying vec2 vUv;
 
+vec2 safeUv(vec2 uv) {
+  return clamp(uv, uTexel * 0.5, 1.0 - uTexel * 0.5);
+}
+
 void main() {
-  vec4 state = texture2D(uState, vUv);
+  vec4 state = texture2D(uState, safeUv(vUv));
   float h = state.r;
   float v = state.g;
 
-  float hL = texture2D(uState, vUv - vec2(uTexel.x, 0.0)).r;
-  float hR = texture2D(uState, vUv + vec2(uTexel.x, 0.0)).r;
-  float hD = texture2D(uState, vUv - vec2(0.0, uTexel.y)).r;
-  float hU = texture2D(uState, vUv + vec2(0.0, uTexel.y)).r;
+  float hL = texture2D(uState, safeUv(vUv - vec2(uTexel.x, 0.0))).r;
+  float hR = texture2D(uState, safeUv(vUv + vec2(uTexel.x, 0.0))).r;
+  float hD = texture2D(uState, safeUv(vUv - vec2(0.0, uTexel.y))).r;
+  float hU = texture2D(uState, safeUv(vUv + vec2(0.0, uTexel.y))).r;
 
   float laplacian = (hL + hR + hD + hU - 4.0 * h);
   v += laplacian * uWaveSpeed;
+
+  vec2 ambientDirA = normalize(uAmbientDirection);
+  vec2 ambientDirB = normalize(vec2(-0.70, -0.24));
+  float phaseA = (dot(vUv, ambientDirA) * uAmbientScale - uTime * uAmbientSpeed) * 6.28318530718;
+  float phaseB = (dot(vUv, ambientDirB) * uAmbientScale * 0.52 - uTime * uAmbientSpeed * 0.58 + 0.38) * 6.28318530718;
+  float broadSwell = sin(phaseA) * 0.68 + sin(phaseB + 1.7) * 0.32;
+  float edgeMask =
+    smoothstep(0.02, 0.16, vUv.x) *
+    smoothstep(0.02, 0.16, vUv.y) *
+    smoothstep(0.02, 0.16, 1.0 - vUv.x) *
+    smoothstep(0.02, 0.16, 1.0 - vUv.y);
+  float startup = smoothstep(0.0, 1.0, uStartupFade);
+  v += ((broadSwell * uAmbientStrength) - h) * uAmbientSourceStrength * edgeMask * startup;
 
   if (uImpulse > 0.0) {
     float d = distance(vUv, uPointer);
@@ -181,6 +213,13 @@ uniform sampler2D uBase;
 uniform vec2 uTexel;
 uniform float uTime;
 uniform float uSpecular;
+uniform float uAmbientStrength;
+uniform float uAmbientSpeed;
+uniform float uAmbientScale;
+uniform float uAmbientReliefStrength;
+uniform float uAmbientShadowStrength;
+uniform float uStartupFade;
+uniform vec2 uAmbientDirection;
 
 varying vec2 vUv;
 
@@ -189,22 +228,45 @@ vec3 deep = vec3(0.0392, 0.1647, 0.2275);
 vec3 haze = vec3(0.3529, 0.5255, 0.6510);
 vec3 ice = vec3(0.7490, 0.8392, 0.9020);
 
+vec2 safeUv(vec2 uv) {
+  return clamp(uv, uTexel * 0.5, 1.0 - uTexel * 0.5);
+}
+
 void main() {
-  float hL = texture2D(uState, vUv - vec2(uTexel.x, 0.0)).r;
-  float hR = texture2D(uState, vUv + vec2(uTexel.x, 0.0)).r;
-  float hD = texture2D(uState, vUv - vec2(0.0, uTexel.y)).r;
-  float hU = texture2D(uState, vUv + vec2(0.0, uTexel.y)).r;
+  float hL = texture2D(uState, safeUv(vUv - vec2(uTexel.x, 0.0))).r;
+  float hR = texture2D(uState, safeUv(vUv + vec2(uTexel.x, 0.0))).r;
+  float hD = texture2D(uState, safeUv(vUv - vec2(0.0, uTexel.y))).r;
+  float hU = texture2D(uState, safeUv(vUv + vec2(0.0, uTexel.y))).r;
   vec2 grad = vec2(hR - hL, hU - hD);
+  float startup = smoothstep(0.0, 1.0, uStartupFade);
+  float ambientStrength = uAmbientStrength * startup;
+  float reliefStrength = uAmbientReliefStrength * startup;
+  float shadowStrength = uAmbientShadowStrength * startup;
+
+  vec2 ambientDirA = normalize(uAmbientDirection);
+  vec2 ambientDirB = normalize(vec2(-0.72, -0.22));
+  float phaseA = (dot(vUv, ambientDirA) * uAmbientScale - uTime * uAmbientSpeed) * 6.28318530718;
+  float phaseB = (dot(vUv, ambientDirB) * uAmbientScale * 0.58 - uTime * uAmbientSpeed * 0.63 + 0.31) * 6.28318530718;
+  float waveA = sin(phaseA);
+  float waveB = sin(phaseB + 1.7);
+  vec2 ambientGrad =
+    ambientDirA * cos(phaseA) * ambientStrength +
+    ambientDirB * cos(phaseB + 1.7) * ambientStrength * 0.46;
+  vec2 ambientDrift =
+    ambientDirA * waveA * ambientStrength * 0.72 +
+    ambientDirB * waveB * ambientStrength * 0.34;
+  float ambientShadow = smoothstep(0.18, 0.92, 0.5 + 0.5 * (waveA * 0.62 + waveB * 0.38));
+  vec2 waterGrad = grad + ambientGrad;
 
   vec2 slowDrift = vec2(sin(uTime * 0.032), cos(uTime * 0.027)) * 0.003;
-  vec2 distortedUv = vUv + grad * 0.034 + slowDrift;
+  vec2 distortedUv = safeUv(vUv + waterGrad * 0.034 + ambientDrift + slowDrift);
   vec3 base = texture2D(uBase, distortedUv).rgb;
-  base = mix(abyss, base * 0.34 + deep * 0.22, 0.58);
+  base = mix(abyss, base * 0.24 + deep * 0.14, 0.52);
 
-  vec3 normal = normalize(vec3(-grad.x * 34.0, 1.0, -grad.y * 34.0));
+  vec3 normal = normalize(vec3(-waterGrad.x * 34.0, 1.0, -waterGrad.y * 34.0));
   vec3 lightDir = normalize(vec3(-0.28, 0.62, 0.73));
   float light = max(dot(normal, lightDir), 0.0);
-  float slope = length(grad) * 20.0;
+  float slope = length(waterGrad) * 20.0;
   float ridge = smoothstep(0.04, 0.24, slope);
   float spec = pow(light, 10.0) * ridge * uSpecular;
   float fresnel = pow(max(0.0, 1.0 - normal.y), 1.5) * 0.14;
@@ -213,13 +275,26 @@ void main() {
   vec2 centre = vUv - vec2(0.5);
   float vignette = smoothstep(0.34, 0.83, length(centre * vec2(1.0, 1.08)));
   float centrePool = 1.0 - smoothstep(0.0, 0.52, length(centre * vec2(1.15, 1.0)));
+  float fieldMask = 1.0 - vignette * 0.74;
+  float reliefField = 0.5 + 0.5 * (waveA * 0.62 + waveB * 0.38);
+  float broadCrest = smoothstep(0.52, 0.88, reliefField);
+  float broadTrough = smoothstep(0.54, 0.90, 1.0 - reliefField);
 
   vec3 colour = base;
   colour += ice * spec;
   colour += haze * fresnel * 0.16;
   colour += haze * breath * centrePool * 0.025;
+  colour += deep * broadCrest * reliefStrength * fieldMask;
+  colour = mix(colour, abyss * 0.78, broadTrough * shadowStrength * 0.22 * fieldMask);
+  colour = mix(colour, colour * 0.78, ambientShadow * shadowStrength * 0.55);
   colour = mix(colour, abyss * 0.75, vignette * 0.82);
   colour = mix(colour, colour * 0.72, centrePool * 0.16);
+
+  float currentPhase = (vUv.y * 7.5 + vUv.x * 1.15 - uTime * uAmbientSpeed * 1.8) * 6.28318530718;
+  float currentBand = smoothstep(0.58, 0.96, 0.5 + 0.5 * sin(currentPhase + waveA * 0.55));
+  float readableMask = fieldMask * (0.48 + centrePool * 0.52);
+  colour += deep * currentBand * reliefStrength * 0.5 * readableMask;
+  colour = mix(colour, abyss * 0.76, broadTrough * shadowStrength * 0.08 * readableMask);
 
   gl_FragColor = vec4(colour, 1.0);
 }
@@ -279,14 +354,18 @@ export default function WaterSurface() {
 
     let disposed = false
     let raf = 0
+    let started = false
+    let startTime = 0
     let sourceTarget = createRenderTarget(SIM_SIZE)
     let destinationTarget = createRenderTarget(SIM_SIZE)
     const pointer = new THREE.Vector2(0.5, 0.5)
     const nextPointer = new THREE.Vector2(0.5, 0.5)
+    let hasPointer = false
     let lastMove = 0
     let pendingImpulse = 0
     let frames = 0
     let fpsLast = performance.now()
+    let baseTexture: THREE.Texture | null = null
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -298,6 +377,8 @@ export default function WaterSurface() {
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.setClearColor(0x04121a, 1)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO))
+    renderer.domElement.style.opacity = '0'
+    renderer.domElement.style.transition = 'opacity 520ms ease'
     mount.appendChild(renderer.domElement)
 
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
@@ -319,6 +400,13 @@ export default function WaterSurface() {
         uRadius: { value: POINTER_RADIUS },
         uWaveSpeed: { value: WAVE_SPEED },
         uDamping: { value: DAMPING },
+        uTime: { value: 0 },
+        uAmbientStrength: { value: AMBIENT_WAVE_STRENGTH },
+        uAmbientSpeed: { value: AMBIENT_WAVE_SPEED },
+        uAmbientScale: { value: AMBIENT_WAVE_SCALE },
+        uAmbientSourceStrength: { value: AMBIENT_SOURCE_STRENGTH },
+        uStartupFade: { value: 0 },
+        uAmbientDirection: { value: AMBIENT_WAVE_DIRECTION },
       },
     })
 
@@ -333,35 +421,34 @@ export default function WaterSurface() {
         uTexel: { value: texel },
         uTime: { value: 0 },
         uSpecular: { value: SPECULAR_STRENGTH },
+        uAmbientStrength: { value: AMBIENT_RENDER_STRENGTH },
+        uAmbientSpeed: { value: AMBIENT_WAVE_SPEED },
+        uAmbientScale: { value: AMBIENT_WAVE_SCALE },
+        uAmbientReliefStrength: { value: AMBIENT_RELIEF_STRENGTH },
+        uAmbientShadowStrength: { value: AMBIENT_SHADOW_STRENGTH },
+        uStartupFade: { value: 0 },
+        uAmbientDirection: { value: AMBIENT_WAVE_DIRECTION },
       },
     })
 
     simScene.add(new THREE.Mesh(quadGeometry, simMaterial))
     renderScene.add(new THREE.Mesh(quadGeometry, renderMaterial))
 
-    renderer.setRenderTarget(sourceTarget)
-    renderer.clear()
-    renderer.setRenderTarget(destinationTarget)
-    renderer.clear()
-    renderer.setRenderTarget(null)
+    const clearSimulationTargets = () => {
+      const clearColour = new THREE.Color()
+      renderer.getClearColor(clearColour)
+      const clearAlpha = renderer.getClearAlpha()
 
-    const textureLoader = new THREE.TextureLoader()
-    const baseTexture = textureLoader.load(
-      '/media/ch00-ocean.webp',
-      () => {
-        if (!disposed) setReady(true)
-      },
-      undefined,
-      () => {
-        if (!disposed) setFallback('The CH00 ocean texture could not be loaded. Falling back to the static base.')
-      },
-    )
-    baseTexture.colorSpace = THREE.SRGBColorSpace
-    baseTexture.wrapS = THREE.ClampToEdgeWrapping
-    baseTexture.wrapT = THREE.ClampToEdgeWrapping
-    baseTexture.minFilter = THREE.LinearFilter
-    baseTexture.magFilter = THREE.LinearFilter
-    renderMaterial.uniforms.uBase.value = baseTexture
+      renderer.setClearColor(0x000000, 0)
+      renderer.setRenderTarget(sourceTarget)
+      renderer.clear(true, false, false)
+      renderer.setRenderTarget(destinationTarget)
+      renderer.clear(true, false, false)
+      renderer.setRenderTarget(null)
+      renderer.setClearColor(clearColour, clearAlpha)
+    }
+
+    clearSimulationTargets()
 
     const resize = () => {
       const width = Math.max(1, mount.clientWidth)
@@ -390,6 +477,14 @@ export default function WaterSurface() {
       const distance = pointer.distanceTo(nextPointer)
       const speed = distance / (dt / 1000)
 
+      if (!hasPointer) {
+        pointer.copy(nextPointer)
+        hasPointer = true
+        lastMove = now
+        pendingImpulse = 0
+        return
+      }
+
       pointer.copy(nextPointer)
       lastMove = now
       if (distance > 0.0015) {
@@ -403,6 +498,8 @@ export default function WaterSurface() {
       timer.update()
 
       const now = performance.now()
+      const elapsed = timer.getElapsed()
+      const startupFade = Math.min(1, (now - startTime) / 1400)
       const impulseAge = now - lastMove
       const impulse = impulseAge < 120 ? pendingImpulse : 0
       pendingImpulse *= 0.62
@@ -411,13 +508,16 @@ export default function WaterSurface() {
         simMaterial.uniforms.uState.value = sourceTarget.texture
         simMaterial.uniforms.uPointer.value = pointer
         simMaterial.uniforms.uImpulse.value = i === 0 ? impulse : 0
+        simMaterial.uniforms.uTime.value = elapsed
+        simMaterial.uniforms.uStartupFade.value = startupFade
         renderer.setRenderTarget(destinationTarget)
         renderer.render(simScene, camera)
         swapTargets()
       }
 
       renderMaterial.uniforms.uState.value = sourceTarget.texture
-      renderMaterial.uniforms.uTime.value = timer.getElapsed()
+      renderMaterial.uniforms.uTime.value = elapsed
+      renderMaterial.uniforms.uStartupFade.value = startupFade
       renderer.setRenderTarget(null)
       renderer.render(renderScene, camera)
 
@@ -431,22 +531,57 @@ export default function WaterSurface() {
       }
     }
 
-    resize()
-    window.addEventListener('resize', resize)
-    renderer.domElement.addEventListener('pointermove', injectPointer, { passive: true })
-    animate()
+    const start = () => {
+      if (started || disposed) return
+
+      started = true
+      startTime = performance.now()
+      fpsLast = startTime
+      frames = 0
+      clearSimulationTargets()
+      resize()
+      window.addEventListener('resize', resize)
+      renderer.domElement.addEventListener('pointermove', injectPointer, { passive: true })
+      animate()
+
+      requestAnimationFrame(() => {
+        if (disposed) return
+        renderer.domElement.style.opacity = '1'
+        setReady(true)
+      })
+    }
+
+    const textureLoader = new THREE.TextureLoader()
+    baseTexture = textureLoader.load(
+      '/media/ch00-ocean.webp',
+      () => {
+        if (!disposed) start()
+      },
+      undefined,
+      () => {
+        if (!disposed) setFallback('The CH00 ocean texture could not be loaded. Falling back to the static base.')
+      },
+    )
+    baseTexture.colorSpace = THREE.SRGBColorSpace
+    baseTexture.wrapS = THREE.ClampToEdgeWrapping
+    baseTexture.wrapT = THREE.ClampToEdgeWrapping
+    baseTexture.minFilter = THREE.LinearFilter
+    baseTexture.magFilter = THREE.LinearFilter
+    renderMaterial.uniforms.uBase.value = baseTexture
 
     return () => {
       disposed = true
       cancelAnimationFrame(raf)
-      window.removeEventListener('resize', resize)
-      renderer.domElement.removeEventListener('pointermove', injectPointer)
+      if (started) {
+        window.removeEventListener('resize', resize)
+        renderer.domElement.removeEventListener('pointermove', injectPointer)
+      }
       sourceTarget.dispose()
       destinationTarget.dispose()
       quadGeometry.dispose()
       simMaterial.dispose()
       renderMaterial.dispose()
-      baseTexture.dispose()
+      baseTexture?.dispose()
       renderer.dispose()
       if (mount.contains(renderer.domElement)) {
         mount.removeChild(renderer.domElement)
