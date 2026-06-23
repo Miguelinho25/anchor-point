@@ -1,9 +1,11 @@
 # Anchor Point — Cross-Device Handoff
 
-> **⚓ LATEST (2026-06-23):** active work is the **CH00 living-ocean backdrop** on branch
-> **`ch00-ocean-atmosphere-step0`**. The cursor-wake (Step 1B) was **rejected and removed** — the
-> approved state is the **living-still ocean base only** (autonomous drift/breathe, no mouse
-> interaction). Read **`HANDOFF_CH00_OCEAN.md`** for the current accepted state and what's next.
+> **⚓ LATEST (2026-06-23):** the **CH00 living-ocean backdrop is DONE and MERGED to `master`**
+> (HEAD `3519925`). A cursor-wake interaction (Step 1B) was tried and **rejected + removed** — the
+> shipped state is the **living-still ocean only**: a dark-ocean still with slow autonomous
+> drift/breathe, a deeper edge vignette, a CH00-only fade, and **no mouse/cursor interaction**.
+> **No pending review and no open branch work.** Read **`HANDOFF_CH00_OCEAN.md`** for exactly what
+> that step covers and the next CH00 options.
 
 > **Purpose of this file:** let a fresh Claude on the home PC continue this project at the same quality. Read it top to bottom before touching anything.
 >
@@ -15,7 +17,7 @@
 
 ## 0. READ-ME-FIRST / current state in one paragraph
 
-Anchor Point is a **finished, committed, fully-merged** product homepage for a maritime-intelligence software company. It has two layers: (1) the **CH00–CH05 cinematic scroll film** (Next.js + raw Three.js/WebGL + GSAP/Lenis) — the hero experience; and (2) a **quiet premium site shell around it** — fixed header/nav, a final "doors open" CTA after CH05, a footer, and three placeholder routes. **All of it is on `master`** (`dc3f89a`) and pushed to GitHub. There is **no pending code work** and **nothing waiting to be reviewed**. The last activity was diagnosing a styling scare (the shell briefly rendered as raw unstyled text after a merge) — it turned out to be a **stale Turbopack compilation, not a code bug** (see §7). The natural next step is **Phase 3** (chapter tempo / designed dissolves / texture) — but that is **deferred and not started**; do not begin it without the user.
+Anchor Point is a **finished, committed, fully-merged** product homepage for a maritime-intelligence software company. It has two layers: (1) the **CH00–CH05 cinematic scroll film** (Next.js + raw Three.js/WebGL + GSAP/Lenis) — the hero experience; and (2) a **quiet premium site shell around it** — fixed header/nav, a final "doors open" CTA after CH05, a footer, and three placeholder routes. Most recently, CH00 gained a **living-ocean backdrop** (a dark-ocean still with slow autonomous drift/breathe behind the WebGL canvas, homepage + CH00 only — no mouse interaction). **All of it is on `master`** (`3519925`) and pushed to GitHub. There is **no pending code work** and **nothing waiting to be reviewed**. The last activity was diagnosing a styling scare (the shell briefly rendered as raw unstyled text after a merge) — it turned out to be a **stale Turbopack compilation, not a code bug** (see §7). The natural next step is **Phase 3** (chapter tempo / designed dissolves / texture) — but that is **deferred and not started**; do not begin it without the user.
 
 **Hard rules the user has held throughout (do not violate):**
 - Do **not** redesign the cinematic film. Every change is a *removal or a calming*, not a rebuild.
@@ -29,19 +31,23 @@ Anchor Point is a **finished, committed, fully-merged** product homepage for a m
 ## 1. Git state & how to resume
 
 - **Remote:** `https://github.com/Miguelinho25/anchor-point.git` (private).
-- **`master` = the live, complete site** at commit **`dc3f89a`**. Pushed. This is what to pull.
+- **`master` = the live, complete site** at commit **`3519925`**. Pushed. This is what to pull.
 - **Branch ladder (all merged into `master`, kept for history — do not delete):**
 
 | Commit | What |
 |---|---|
-| `dc3f89a` | **Build site shell navigation and CTA** ← `master` HEAD |
+| `3519925` | **Merge CH00 living-ocean backdrop** ← `master` HEAD |
+| `ba74eca` | Remove rejected CH00 cursor wake |
+| `a000663` | Add CH00 ocean atmosphere backdrop (the approved living-still base) |
+| `4811668` | Fix Three.js TypeScript declarations (`next build` typecheck now passes) |
+| `dc3f89a` | Build site shell navigation and CTA |
 | `37918cf` | Apply Phase 2 Mont-Fort restraint polish |
 | `b4752f0` | Apply Phase 1 Mont-Fort restraint polish |
 | `ddb61a9` | Bundle `ui-ux-pro-max` skill + dev-stack notes |
 | `abea77e` | First cross-device handoff |
 | `8da6efa` | CH05 operating-system reveal (original film baseline) |
 
-- **Local/remote branches** (all behind or equal to `master`): `monfort-restraint-polish-phase-1`, `montfort-restraint-polish-phase-2`, `site-shell-navigation-cta`, `ch05-operating-system-reveal` (historical). Plus **`site-shell-style-hotfix`** — a local diagnostic branch that ended up with **zero commits** (the styling issue needed no code change). It equals `master`; it is **not pushed** and can be ignored or deleted by the user.
+- **Local/remote branches** (all merged into / behind `master`, kept for history — do not delete): `ch00-ocean-atmosphere-step0` (the CH00 ocean work, now merged), `build-typecheck-fix`, `monfort-restraint-polish-phase-1`, `montfort-restraint-polish-phase-2`, `site-shell-navigation-cta`, `ch05-operating-system-reveal` (historical). Plus **`site-shell-style-hotfix`** — a local diagnostic branch that ended up with **zero commits** (the styling issue needed no code change). It equals `master`; it is **not pushed** and can be ignored or deleted by the user.
 
 **To resume on the home PC:**
 ```bash

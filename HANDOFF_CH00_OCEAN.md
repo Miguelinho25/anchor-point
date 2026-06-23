@@ -1,65 +1,61 @@
-# Handoff — CH00 Ocean Atmosphere
+# Handoff — CH00 Ocean Atmosphere (DONE / merged)
 
-> Focused handoff for continuing the CH00 ocean work on another device.
-> For broader project context read **`HANDOFF.md`** first — this file complements it.
+> Record of the CH00 living-ocean step. For broader project context read **`HANDOFF.md`** first.
 > Updated 2026-06-23.
 
 ## TL;DR
 
-CH00 has a **living, media-driven dark ocean** backdrop — entirely inside one isolated component:
-**`components/site/OceanBackdrop.tsx`**. Everything is additive and reversible — no chapter code,
-no `Stage.tsx`, no scroll architecture, no new packages.
+CH00 (the dark-sea opening) now has a **living, media-driven ocean** backdrop. It is **complete,
+approved, and merged to `master`** (`3519925`). Everything lives in one isolated component —
+**`components/site/OceanBackdrop.tsx`** — plus one asset and 3 lines in `app/layout.tsx`. Fully
+additive and reversible; no chapter code, no `Stage.tsx`, no scroll architecture, no new packages.
 
-**Current accepted state: Step 1A.3 living-still ocean base.** A cursor-wake pass (Step 1B) was
-implemented, reviewed on a real device, and **rejected** ("makes the page feel cheaper"). It has
-been reverted. There is **no mouse/cursor interaction** on the ocean.
+**There is no pending review and no open branch work for CH00.** A cursor-wake interaction was
+tried and rejected (see below) — the shipped state is the **living-still ocean only**.
 
-## Branch & commits
+## What shipped (on `master`)
 
-- **Branch:** `ch00-ocean-atmosphere-step0` (pushed to origin)
-- `4811668` — master base (Three.js typecheck fix)
-- `a000663` — **APPROVED**: "Add CH00 ocean atmosphere backdrop" (living-still base)
-- `cb0d3bd` — rejected cursor wake (WIP, kept in history)
-- `86073f0` — handoff docs
-- HEAD — **"Remove rejected CH00 cursor wake"** (revert of cb0d3bd + this update)
-
-```bash
-git fetch origin
-git checkout ch00-ocean-atmosphere-step0
-git pull
-cd anchor-point && npm install && npm run dev   # http://localhost:3000
-```
-
-`master` is untouched. The ocean branch is the only active work.
-
-## What's accepted — the living-still ocean (Step 1A.3)
-
-All in `OceanBackdrop.tsx` + `public/media/ch00-ocean.webp` (37.6 KB) + 3 lines in `app/layout.tsx`:
+The "living-still" ocean, all in `OceanBackdrop.tsx` + `public/media/ch00-ocean.webp` (~38 KB) +
+3 lines in `app/layout.tsx`:
 
 - Optimized dark-ocean still layered at `z-index:-1` **behind** the transparent WebGL canvas.
-- **Homepage + CH00 only** via `usePathname() === '/'` gate + passive scroll fade.
+- **Homepage + CH00 only** via `usePathname() === '/'` gate + a passive scroll fade.
 - **Two DOM layers** drift/breathe at different slow speeds (depth) + a faint screen-blended
-  **luminance breath**. Values tuned across three passes (1A → 1A.2 → 1A.3) before approval.
-- **Edge vignette** deepened toward abyss (0.88 at edge); recede + centre pool keep
-  text/particles readable.
-- **CH00-only fade:** held full until `0.45vh`, gone by `1.30vh` (before CH01 at ~2vh).
-- **No mouse interaction.** Reduced-motion → static. Touch → normal.
+  **luminance breath**. Motion values were tuned across three passes (1A → 1A.2 → 1A.3) before
+  approval — the user wanted it *noticeably* alive but still premium/restrained.
+- **Edge vignette** deepened toward abyss (0.88 at the edge); a recede + centre pool keeps the
+  vessel particles and CH00 text legible on top.
+- **CH00-only fade:** held full until `0.45vh`, gone by `1.30vh` (before CH01 at ~2vh). Passive
+  scroll listener only — does **not** touch GSAP / Lenis / ScrollTrigger / scrollStore.
+- Respects `prefers-reduced-motion` (falls back to the static still). **No mouse interaction.**
 
-## What was rejected (do NOT re-introduce)
+## What was tried and rejected (do NOT re-introduce without explicit approval)
 
 - **Step 1B whole-layer mouse parallax** — felt like "a poster moving behind glass."
-- **Step 1B cursor wake (raw WebGL disturbance field)** — reviewed on a real device; made the
-  page feel cheaper. Reverted cleanly.
+- **Step 1B cursor wake** (raw-WebGL quad + decaying disturbance-field shader that bent the ocean
+  UVs along the cursor path) — reviewed on a real device; "makes the page feel cheaper." Reverted
+  cleanly in `ba74eca`; the wake commit `cb0d3bd` is kept in history only.
 
-Do **not** add any form of mouse/cursor interaction to the ocean without explicit re-approval.
+Do **not** add any form of mouse/cursor/pointer interaction to the ocean again without the user
+asking for it specifically.
 
-## Next steps
+## Git trail
 
-The ocean base is approved and clean. Options from here (user's call, do not start without asking):
+- `4811668` — Three.js typecheck fix (so `next build` passes)
+- `a000663` — **approved** living-still ocean base
+- `cb0d3bd` — cursor wake (rejected; history only)
+- `ba74eca` — remove rejected cursor wake
+- `3519925` — **merge to `master`** (`--no-ff`, preserves the above)
 
-1. **Merge to `master`** — the living-still ocean is solid; could be shipped as-is.
-2. **Step 2 — subtle depth of field / haze layer** — purely CSS/DOM, no new interaction.
-3. **Broader CH00→CH05 media evolution** — see the earlier planning doc in conversation history.
+Branch `ch00-ocean-atmosphere-step0` is merged and kept for history (do not delete).
+
+## Next CH00 options (none started — do not begin without the user)
+
+1. **Ship as-is** — it's already on `master`; nothing required.
+2. **Step 2 — subtle depth / haze** — purely CSS/DOM atmosphere (e.g. a faint drifting haze or
+   light-shaft layer). No new interaction, same isolation in `OceanBackdrop.tsx`.
+3. **Broader CH00→CH05 media evolution** — the larger cinematic plan from the earlier planning
+   turn (real footage in CH03, atmospheric descent in CH01, etc.). Big scope; plan first.
 
 ## Hard constraints (unchanged)
 
