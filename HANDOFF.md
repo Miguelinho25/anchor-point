@@ -22,7 +22,7 @@
 
 ## 0. READ-ME-FIRST / current state in one paragraph
 
-Anchor Point is a **finished, committed, fully-merged** product homepage for a maritime-intelligence software company. It has two layers: (1) the **CH00–CH05 cinematic scroll film** (Next.js + raw Three.js/WebGL + GSAP/Lenis) — the hero experience; and (2) a **quiet premium site shell around it** — fixed header/nav, a final "doors open" CTA after CH05, a footer, and three placeholder routes. Most recently, CH00 gained a **living-ocean backdrop** (a dark-ocean still with slow autonomous drift/breathe behind the WebGL canvas, homepage + CH00 only — no mouse interaction). **All of it is on `master`** (`3519925`) and pushed to GitHub. There is **no pending code work** and **nothing waiting to be reviewed**. The last activity was diagnosing a styling scare (the shell briefly rendered as raw unstyled text after a merge) — it turned out to be a **stale Turbopack compilation, not a code bug** (see §7). The natural next step is **Phase 3** (chapter tempo / designed dissolves / texture) — but that is **deferred and not started**; do not begin it without the user.
+Anchor Point is a **finished, committed, fully-merged** product homepage for a maritime-intelligence software company. It has two layers: (1) the **CH00–CH05 cinematic scroll film** (Next.js + raw Three.js/WebGL + GSAP/Lenis) — the hero experience; and (2) a **quiet premium site shell around it** — fixed header/nav, a final "doors open" CTA after CH05, a footer, and four sub-routes (`/anchor-voyage`, `/anchor-ai`, `/contact`, **`/about`**). CH00 has a **living-ocean backdrop** (a dark-ocean still with slow autonomous drift/breathe behind the WebGL canvas, homepage + CH00 only — no mouse interaction), and an **About / Meet-the-team page** (`/about` + `About` nav item + founder cards) is shipped. **All of it is on `master`** (HEAD `97aed33`; site code at `f030a25`) and pushed to GitHub. There is **no pending code work** and **nothing waiting to be reviewed**. The most recent activity was a **plan** for an experimental Evan Wallace-inspired interactive dark-water surface for CH00 — see **`HANDOFF_WATER_LAB.md`** (planned, not started). Other deferred options: **Phase 3** (chapter tempo / designed dissolves / texture). Do not begin either without the user. (A past styling scare — the shell briefly rendering unstyled after a merge — was a **stale Turbopack compilation, not a code bug**; see §7.)
 
 **Hard rules the user has held throughout (do not violate):**
 - Do **not** redesign the cinematic film. Every change is a *removal or a calming*, not a rebuild.
@@ -36,12 +36,14 @@ Anchor Point is a **finished, committed, fully-merged** product homepage for a m
 ## 1. Git state & how to resume
 
 - **Remote:** `https://github.com/Miguelinho25/anchor-point.git` (private).
-- **`master` = the live, complete site** at commit **`3519925`**. Pushed. This is what to pull.
+- **`master` = the live, complete site** at commit **`97aed33`** (the site code itself is at `f030a25`; `97aed33` is docs-only). Pushed. This is what to pull.
 - **Branch ladder (all merged into `master`, kept for history — do not delete):**
 
 | Commit | What |
 |---|---|
-| `3519925` | **Merge CH00 living-ocean backdrop** ← `master` HEAD |
+| `97aed33` | Add WebGL water POC plan handoff (`HANDOFF_WATER_LAB.md`), docs only ← `master` HEAD |
+| `f030a25` | **Add About page (`/about`) + founder section + `About` nav item** |
+| `3519925` | Merge CH00 living-ocean backdrop |
 | `ba74eca` | Remove rejected CH00 cursor wake |
 | `a000663` | Add CH00 ocean atmosphere backdrop (the approved living-still base) |
 | `4811668` | Fix Three.js TypeScript declarations (`next build` typecheck now passes) |
@@ -90,10 +92,11 @@ npm run dev                     # http://localhost:3000
 | CH05 | AnchorVoyage + Anchor AI unify into **Anchor Point**; boundary seals; held final frame. The only large brand reveal. |
 
 **Layer 2 — the site shell (NEW this phase):**
-- **Fixed header / nav** — wordmark left; `AnchorVoyage · Anchor AI · Vision` + a framed `Request Access` right. Transparent at the very top (clean over CH00); slides away on scroll-down, returns with a faint scrim on scroll-up.
+- **Fixed header / nav** — wordmark left; `AnchorVoyage · Anchor AI · Vision · About` + a framed `Request Access` right. Transparent at the very top (clean over CH00); slides away on scroll-down, returns with a faint scrim on scroll-up.
 - **Final CTA** — a "doors open" section in normal flow **directly after CH05's film**: eyebrow "Enter the system" → framed `Request Access` → `Explore AnchorVoyage · Explore Anchor AI · Contact`.
 - **Footer** — brand + existing tagline, product/contact links, `© 2026 Anchor Point · Legal` base.
 - **Placeholder routes** — `/anchor-voyage`, `/anchor-ai`, `/contact`. Minimal, brand-consistent, each with an honest "In development" status. They exist to make nav functional and prepare the architecture — **not** full product pages.
+- **About page** (`/about`) — a real editorial company page (hero → how it started → founder cards → vision → CTA). Founders **Miguel Morett · Argenis Omaña · Ansh Sahadew**, monogram initials only. **Approved as the base; copy + real photos to be refined later** (do not rewrite or add photos without the user). Lives in `app/about/page.tsx`; styles in `globals.css` (`.about-*`).
 
 ---
 
@@ -221,8 +224,8 @@ A fresh `npm run dev` after pulling is always correct — this only bites a serv
 ## 11. Immediate next action for the home-PC Claude
 
 1. `git checkout master && git pull`, `npm install`, `npm run dev`. Confirm the `ui-ux-pro-max` skill is available (working *inside* this repo).
-2. **Sanity-check the live state** (don't assume): header styled and fixed at top; scroll down → CH00–CH05 film plays; past CH05 → the CTA "doors open"; footer below; `/anchor-voyage`, `/anchor-ai`, `/contact` load styled. If the shell looks unstyled, it's §7 — `rm -rf .next && npm run dev`, **not** a code hunt.
-3. There is **no pending code work** and nothing awaiting review. Wait for the user's direction. The likely next topic is **Phase 3** (deferred): **3A** chapter tempo variation, **3B** designed inter-chapter dissolves ("dissolve, don't cut"), **3C** restrained atmospheric texture — all higher-risk, **do not start without the user**.
-4. Smaller open threads to raise if relevant: the **"Vision" nav target** (currently `/`); whether to make `next build` pass type-check (the `three` types item, §8).
+2. **Sanity-check the live state** (don't assume): header styled and fixed at top with nav `AnchorVoyage · Anchor AI · Vision · About`; scroll down → CH00–CH05 film plays; past CH05 → the CTA "doors open"; footer below; `/anchor-voyage`, `/anchor-ai`, `/contact`, `/about` load styled. If the shell looks unstyled, it's §7 — `rm -rf .next && npm run dev`, **not** a code hunt.
+3. There is **no pending code work** and nothing awaiting review. Wait for the user's direction. The **most likely next topic is the WebGL water POC** — its full plan + verified licensing + first-step spec are in **`HANDOFF_WATER_LAB.md`** (read it before starting; it's an isolated `experiment/water-lab` build that must not touch master/`Stage.tsx`). Also deferred: **Phase 3** (3A tempo, 3B inter-chapter dissolves, 3C atmospheric texture). **Do not start either without the user.**
+4. Smaller open threads to raise if relevant: refining the **About** copy + adding real founder photos (approved-base only for now); the **"Vision" nav target** (currently `/`). (The `three` types build issue is already fixed — `4811668`.)
 
 Good luck. Keep it restrained.
