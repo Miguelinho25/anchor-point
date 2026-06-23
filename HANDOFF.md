@@ -35,6 +35,13 @@ Anchor Point is a **finished, committed, fully-merged** product homepage for a m
 
 ## 0.5 THE STANDARD & THE GOAL (creative North Star — read before judging any work)
 
+**⚠️ CRITICAL DISTINCTION — Mont-Fort is the bar for QUALITY / CRAFT, NOT a visual template.**
+Anchor Point **keeps its current identity**: the dark `--abyss` / instrument-blue palette, the
+typography, the whole current vibe — **all locked, not up for change.** We are matching Mont-Fort's
+*level of craft, restraint, and production value*, expressed entirely in **our own dark maritime
+world.** Do **NOT** lighten the palette, swap the typeface, or imitate Mont-Fort's light/airy look.
+Same league, different world. (This was the user's explicit instruction — don't mix it up.)
+
 **The benchmark is [mont-fort.com](https://mont-fort.com/).** It was viewed live on 2026-06-23 (Chrome).
 Earlier notes assumed it was a *dark* site — **that was wrong.** What it actually is:
 
@@ -49,8 +56,10 @@ Earlier notes assumed it was a *dark* site — **that was wrong.** What it actua
   competing in their exact visual territory, against real footage. That raises our bar specifically.
 
 **Honest standing (brutal scorecard, 1–10, Montfort ≈ 9.5):** Anchor Point ≈ **6 overall.** They beat
-us decisively on **production value / real imagery (us ~4)**, **evolving light/palette (us one-note
-dark)**, and **serene restraint**. **We beat them on narrative concept (chaos→order→hidden
+us decisively on **production value / real imagery (us ~4)** and **serene restraint**. (Their palette
+*evolves with light*; ours is uniformly dark — but **that uniform dark is our identity, which we keep.**
+The craft gap is making our dark world feel as *real and produced* as theirs — **not** making it
+lighter.) **We beat them on narrative concept (chaos→order→hidden
 intelligence→unified reveal) and interactive/WebGL originality.** Strong, original, premium — but not
 yet a *masterpiece*. The gap is **production value + restraint**, both buildable without rebuilding
 anything we have.
@@ -71,10 +80,12 @@ never piles on top.** Water replaces the flat ocean; a real vessel replaces part
 replaces a diagram. After every addition, judge the *whole* against one test: **"does it still feel like
 one serene world?"** Keep the Phase 1–2 restraint sacred. Add by substitution, judge visually, climb.
 
-Highest-leverage gap-closers (in order): (1) **one real cinematic vessel/sea shot** (CH03); (2) **let
-the palette breathe** — don't hold abyss-black for 1,500vh; a lighter surface before sinking dark makes
-the dark *mean* something; (3) **authored cross-dissolves** between chapters (Phase 3B); (4) **subtract
-more** toward serenity; (5) re-interrogate whether the display typeface is *timeless-luxury* enough.
+Highest-leverage gap-closers — all **within our existing dark identity** (in order): (1) **one real
+cinematic vessel/sea shot** (CH03) — the biggest single move; (2) **real media / 3D by substitution**
+to raise production value; (3) **authored cross-dissolves** between chapters (Phase 3B); (4) **subtract
+more** toward serenity. (Tonal *depth* may deepen strictly *within* the dark palette — abyss ↔ deep
+navy ↔ faint surface sheen — but **never go light, and never change the palette or typeface.** The
+current colours and type are the identity and stay.)
 
 ---
 
