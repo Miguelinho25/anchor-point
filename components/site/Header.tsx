@@ -9,6 +9,7 @@ const NAV = [
   { label: 'AnchorVoyage', href: '/anchor-voyage' },
   { label: 'Anchor AI', href: '/anchor-ai' },
   { label: 'Vision', href: '/' },
+  { label: 'About', href: '/about' },
 ]
 
 // Minimal cinematic header. It does not sit *on top of* the film — it gets out
