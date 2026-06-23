@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 const SIM_SIZE = 256
+const BACKDROP_SIM_SIZE = 192
 const MAX_PIXEL_RATIO = 1.5
+const BACKDROP_MAX_PIXEL_RATIO = 1
 const POINTER_RADIUS = 0.018
 const POINTER_STRENGTH = 0.026
 const WAVE_SPEED = 0.18
@@ -18,6 +20,13 @@ const AMBIENT_RENDER_STRENGTH = 0.018
 const AMBIENT_RELIEF_STRENGTH = 0.18
 const AMBIENT_SHADOW_STRENGTH = 0.62
 const AMBIENT_WAVE_DIRECTION = new THREE.Vector2(-1, 0.12).normalize()
+const BACKDROP_AMBIENT_WAVE_STRENGTH = 0.044
+const BACKDROP_AMBIENT_WAVE_SPEED = 0.15
+const BACKDROP_AMBIENT_WAVE_SCALE = 1.72
+const BACKDROP_AMBIENT_SOURCE_STRENGTH = 0.009
+const BACKDROP_AMBIENT_RENDER_STRENGTH = 0.03
+const BACKDROP_AMBIENT_RELIEF_STRENGTH = 0.32
+const BACKDROP_AMBIENT_SHADOW_STRENGTH = 0.74
 
 const LAB_CSS = `
 .water-lab {
@@ -45,6 +54,23 @@ const LAB_CSS = `
     linear-gradient(rgba(4,18,26,0.28), rgba(4,18,26,0.34)),
     url(/media/ch00-ocean.webp) center / cover no-repeat;
   transform: scale(1.08);
+}
+.water-lab--backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  background: transparent;
+  pointer-events: none;
+}
+.water-lab--backdrop .water-lab-mount,
+.water-lab--backdrop .water-lab-fallback,
+.water-lab--backdrop .water-lab-vignette {
+  position: absolute;
+}
+.water-lab--backdrop .water-lab-vignette {
+  display: none;
 }
 .water-lab-vignette {
   position: fixed;
@@ -316,7 +342,22 @@ function createRenderTarget(size: number) {
   })
 }
 
-export default function WaterSurface() {
+type WaterSurfaceProps = {
+  mode?: 'lab' | 'backdrop'
+}
+
+export default function WaterSurface({ mode = 'lab' }: WaterSurfaceProps) {
+  const isLab = mode === 'lab'
+  const simSize = isLab ? SIM_SIZE : BACKDROP_SIM_SIZE
+  const maxPixelRatio = isLab ? MAX_PIXEL_RATIO : BACKDROP_MAX_PIXEL_RATIO
+  const ambientWaveStrength = isLab ? AMBIENT_WAVE_STRENGTH : BACKDROP_AMBIENT_WAVE_STRENGTH
+  const ambientWaveSpeed = isLab ? AMBIENT_WAVE_SPEED : BACKDROP_AMBIENT_WAVE_SPEED
+  const ambientWaveScale = isLab ? AMBIENT_WAVE_SCALE : BACKDROP_AMBIENT_WAVE_SCALE
+  const ambientSourceStrength = isLab ? AMBIENT_SOURCE_STRENGTH : BACKDROP_AMBIENT_SOURCE_STRENGTH
+  const ambientRenderStrength = isLab ? AMBIENT_RENDER_STRENGTH : BACKDROP_AMBIENT_RENDER_STRENGTH
+  const ambientReliefStrength = isLab ? AMBIENT_RELIEF_STRENGTH : BACKDROP_AMBIENT_RELIEF_STRENGTH
+  const ambientShadowStrength = isLab ? AMBIENT_SHADOW_STRENGTH : BACKDROP_AMBIENT_SHADOW_STRENGTH
+  const startupDuration = isLab ? 1400 : 1050
   const mountRef = useRef<HTMLDivElement>(null)
   const fpsRef = useRef<HTMLSpanElement>(null)
   const [fallback, setFallback] = useState<string | null>(null)
@@ -330,11 +371,11 @@ export default function WaterSurface() {
     const finePointer = window.matchMedia('(pointer: fine)').matches
 
     if (reduceMotion) {
-      setFallback('Reduced motion is enabled. Showing the accepted static ocean base.')
+      setFallback(isLab ? 'Reduced motion is enabled. Showing the accepted static ocean base.' : 'Reduced motion is enabled.')
       return
     }
     if (!finePointer) {
-      setFallback('Pointer interaction is disabled on this device. Showing the accepted static ocean base.')
+      setFallback(isLab ? 'Pointer interaction is disabled on this device. Showing the accepted static ocean base.' : 'Pointer interaction is disabled.')
       return
     }
 
@@ -356,8 +397,8 @@ export default function WaterSurface() {
     let raf = 0
     let started = false
     let startTime = 0
-    let sourceTarget = createRenderTarget(SIM_SIZE)
-    let destinationTarget = createRenderTarget(SIM_SIZE)
+    let sourceTarget = createRenderTarget(simSize)
+    let destinationTarget = createRenderTarget(simSize)
     const pointer = new THREE.Vector2(0.5, 0.5)
     const nextPointer = new THREE.Vector2(0.5, 0.5)
     let hasPointer = false
@@ -376,16 +417,16 @@ export default function WaterSurface() {
     })
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.setClearColor(0x04121a, 1)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO))
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPixelRatio))
     renderer.domElement.style.opacity = '0'
-    renderer.domElement.style.transition = 'opacity 520ms ease'
+    renderer.domElement.style.transition = isLab ? 'opacity 520ms ease' : 'opacity 300ms ease'
     mount.appendChild(renderer.domElement)
 
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
     const quadGeometry = new THREE.PlaneGeometry(2, 2)
     const simScene = new THREE.Scene()
     const renderScene = new THREE.Scene()
-    const texel = new THREE.Vector2(1 / SIM_SIZE, 1 / SIM_SIZE)
+    const texel = new THREE.Vector2(1 / simSize, 1 / simSize)
 
     const simMaterial = new THREE.ShaderMaterial({
       vertexShader: FULLSCREEN_VERTEX,
@@ -401,10 +442,10 @@ export default function WaterSurface() {
         uWaveSpeed: { value: WAVE_SPEED },
         uDamping: { value: DAMPING },
         uTime: { value: 0 },
-        uAmbientStrength: { value: AMBIENT_WAVE_STRENGTH },
-        uAmbientSpeed: { value: AMBIENT_WAVE_SPEED },
-        uAmbientScale: { value: AMBIENT_WAVE_SCALE },
-        uAmbientSourceStrength: { value: AMBIENT_SOURCE_STRENGTH },
+        uAmbientStrength: { value: ambientWaveStrength },
+        uAmbientSpeed: { value: ambientWaveSpeed },
+        uAmbientScale: { value: ambientWaveScale },
+        uAmbientSourceStrength: { value: ambientSourceStrength },
         uStartupFade: { value: 0 },
         uAmbientDirection: { value: AMBIENT_WAVE_DIRECTION },
       },
@@ -421,11 +462,11 @@ export default function WaterSurface() {
         uTexel: { value: texel },
         uTime: { value: 0 },
         uSpecular: { value: SPECULAR_STRENGTH },
-        uAmbientStrength: { value: AMBIENT_RENDER_STRENGTH },
-        uAmbientSpeed: { value: AMBIENT_WAVE_SPEED },
-        uAmbientScale: { value: AMBIENT_WAVE_SCALE },
-        uAmbientReliefStrength: { value: AMBIENT_RELIEF_STRENGTH },
-        uAmbientShadowStrength: { value: AMBIENT_SHADOW_STRENGTH },
+        uAmbientStrength: { value: ambientRenderStrength },
+        uAmbientSpeed: { value: ambientWaveSpeed },
+        uAmbientScale: { value: ambientWaveScale },
+        uAmbientReliefStrength: { value: ambientReliefStrength },
+        uAmbientShadowStrength: { value: ambientShadowStrength },
         uStartupFade: { value: 0 },
         uAmbientDirection: { value: AMBIENT_WAVE_DIRECTION },
       },
@@ -453,7 +494,7 @@ export default function WaterSurface() {
     const resize = () => {
       const width = Math.max(1, mount.clientWidth)
       const height = Math.max(1, mount.clientHeight)
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO))
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPixelRatio))
       renderer.setSize(width, height, false)
     }
 
@@ -499,7 +540,7 @@ export default function WaterSurface() {
 
       const now = performance.now()
       const elapsed = timer.getElapsed()
-      const startupFade = Math.min(1, (now - startTime) / 1400)
+      const startupFade = Math.min(1, (now - startTime) / startupDuration)
       const impulseAge = now - lastMove
       const impulse = impulseAge < 120 ? pendingImpulse : 0
       pendingImpulse *= 0.62
@@ -541,7 +582,11 @@ export default function WaterSurface() {
       clearSimulationTargets()
       resize()
       window.addEventListener('resize', resize)
-      renderer.domElement.addEventListener('pointermove', injectPointer, { passive: true })
+      if (isLab) {
+        renderer.domElement.addEventListener('pointermove', injectPointer, { passive: true })
+      } else {
+        window.addEventListener('pointermove', injectPointer, { passive: true })
+      }
       animate()
 
       requestAnimationFrame(() => {
@@ -574,7 +619,11 @@ export default function WaterSurface() {
       cancelAnimationFrame(raf)
       if (started) {
         window.removeEventListener('resize', resize)
-        renderer.domElement.removeEventListener('pointermove', injectPointer)
+        if (isLab) {
+          renderer.domElement.removeEventListener('pointermove', injectPointer)
+        } else {
+          window.removeEventListener('pointermove', injectPointer)
+        }
       }
       sourceTarget.dispose()
       destinationTarget.dispose()
@@ -589,16 +638,18 @@ export default function WaterSurface() {
     }
   }, [])
 
+  const className = isLab ? 'water-lab' : 'water-lab water-lab--backdrop'
+
   return (
-    <section className="water-lab" aria-label="Internal dark-water interaction experiment">
+    <section className={className} aria-label={isLab ? 'Internal dark-water interaction experiment' : 'CH00 dark-water surface'}>
       <style dangerouslySetInnerHTML={{ __html: LAB_CSS }} />
       {fallback ? <div className="water-lab-fallback" /> : null}
       <div ref={mountRef} className="water-lab-mount" aria-hidden />
       <div className="water-lab-vignette" aria-hidden />
 
-      {fallback ? (
+      {isLab && fallback ? (
         <div className="water-lab-fallback-note">{fallback}</div>
-      ) : (
+      ) : isLab ? (
         <>
           <div className="water-lab-panel">
             <div className="water-lab-kicker">Internal water lab</div>
@@ -615,7 +666,7 @@ export default function WaterSurface() {
             <span ref={fpsRef}>-- FPS</span>
           </div>
         </>
-      )}
+      ) : null}
     </section>
   )
 }

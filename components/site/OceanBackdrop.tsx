@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
+import WaterSurface from '@/components/experimental/WaterSurface'
 
 /**
  * CH00 ocean-atmosphere — Step 1A (living-ocean motion, DOM/CSS only).
@@ -36,6 +37,22 @@ const OCEAN_CSS = `
   background-repeat: no-repeat;
   will-change: transform;
   backface-visibility: hidden;
+}
+.ap-ocean-webgl-base {
+  position: absolute;
+  inset: -4%;
+  background:
+    radial-gradient(ellipse 66% 52% at 50% 44%, rgba(10,42,58,0.22) 0%, rgba(4,18,26,0.08) 52%, rgba(4,18,26,0.80) 100%),
+    linear-gradient(rgba(4,18,26,0.34), rgba(4,18,26,0.42)),
+    url(/media/ch00-ocean.webp) center / cover no-repeat;
+  filter: brightness(0.46) saturate(0.72) contrast(1.08);
+  transform: scale(1.04);
+}
+.ap-ocean-webgl-test .ap-ocean-a,
+.ap-ocean-webgl-test .ap-ocean-b,
+.ap-ocean-webgl-test .ap-ocean-lum {
+  opacity: 0;
+  animation: none;
 }
 /* Front layer — the main ocean, gentle breathing swell + slow lateral drift */
 .ap-ocean-a {
@@ -120,6 +137,7 @@ export default function OceanBackdrop() {
   return (
     <div
       ref={ref}
+      className="ap-ocean-webgl-test"
       aria-hidden
       style={{
         position: 'fixed',
@@ -132,12 +150,18 @@ export default function OceanBackdrop() {
     >
       <style dangerouslySetInnerHTML={{ __html: OCEAN_CSS }} />
 
+      {/* WebGL-matched preload/fallback base — prevents a visible old-ocean swap on reload. */}
+      <div className="ap-ocean-webgl-base" />
       {/* Deeper water (back) — softened + mirrored, slow opposite drift for parallax */}
       <div className="ap-ocean-img ap-ocean-b" />
       {/* The dark-ocean still (front) — gentle breathing swell + slow drift */}
       <div className="ap-ocean-img ap-ocean-a" />
       {/* Luminance breath — faint cool lift rising and falling on the water */}
       <div className="ap-ocean-lum" />
+
+      {/* Experimental CH00 WebGL water — primary layer when supported.
+          The accepted still ocean remains underneath for loading, fallback, and revert. */}
+      <WaterSurface mode="backdrop" />
 
       {/* Edge vignette — dissolves the frame into abyss (no horizon, keeps it mysterious).
           Step 1A.3 darkness pass: deepened the surround (~+13% at the edge, 0.75 → 0.88)

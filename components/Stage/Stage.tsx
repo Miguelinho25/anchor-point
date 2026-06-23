@@ -99,6 +99,9 @@ const fragmentShader = /* glsl */ `
     vec3 signal = vec3(0.094, 0.878, 1.0);
     float t = smoothstep(0.4, 1.0, uProgress);
     vec3 col = mix(steel, signal, t);
+    float ch00Atmosphere = 1.0 - smoothstep(0.08, 0.34, uProgress);
+    vec3 ch00Mist = mix(steel, vec3(0.749, 0.839, 0.902), 0.18);
+    col = mix(col, ch00Mist, ch00Atmosphere * 0.22);
     col += col * t * 0.55;
 
     // CH04: dual radial scan waves — outward read + inward data return
@@ -115,7 +118,8 @@ const fragmentShader = /* glsl */ `
     float crowdFloor = 0.04 + uCh04Progress * 0.08 + uCh05Progress * 0.06;
     float crowdFade = clamp(1.0 - smoothstep(0.0, 0.28, uCh02Progress), crowdFloor, 1.0);
 
-    gl_FragColor = vec4(col, alpha * fog * (0.42 + t * 0.52) * crowdFade);
+    float ch00Visibility = ch00Atmosphere * 0.08;
+    gl_FragColor = vec4(col, alpha * fog * (0.47 + t * 0.49 + ch00Visibility) * crowdFade);
   }
 `
 
