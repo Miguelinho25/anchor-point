@@ -1,5 +1,10 @@
 # Anchor Point — Cross-Device Handoff
 
+> **⚓ LATEST (2026-06-23):** active work is the **CH00 living-ocean backdrop** on branch
+> **`ch00-ocean-atmosphere-step0`**. A cursor-wake pass (Step 1B) is committed as **WIP pending a
+> real-mouse review**. If you're continuing that, read **`HANDOFF_CH00_OCEAN.md`** first — it is the
+> authoritative handoff for that work. The rest of this file is the broader project baseline.
+
 > **Purpose of this file:** let a fresh Claude on the home PC continue this project at the same quality. Read it top to bottom before touching anything.
 >
 > **Written:** 2026-06-22 (laptop session — "site shell" phase complete).
