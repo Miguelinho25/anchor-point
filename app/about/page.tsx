@@ -7,11 +7,12 @@ export const metadata: Metadata = {
     'Anchor Point was founded by three university students building a clearer intelligence layer for global shipping.',
 }
 
-// Founding team — initials only (no invented bios, no photos, no titles beyond Co-Founder).
+// Founding team — real portraits (1122×1402, consistent 4:5 crop). No invented
+// bios, no titles beyond Co-Founder.
 const FOUNDERS = [
-  { name: 'Miguel Morett', initials: 'MM' },
-  { name: 'Argenis Omaña', initials: 'AO' },
-  { name: 'Ansh Sahadew', initials: 'AS' },
+  { name: 'Miguel Morett', image: '/media/team/miguel.png' },
+  { name: 'Argenis Omaña', image: '/media/team/argenis.png' },
+  { name: 'Ansh Sahadew', image: '/media/team/ansh.png' },
 ]
 
 export default function AboutPage() {
@@ -53,11 +54,20 @@ export default function AboutPage() {
           <div className="about-team">
             {FOUNDERS.map((f) => (
               <article className="about-card" key={f.name}>
-                <span className="about-monogram" aria-hidden="true">
-                  {f.initials}
-                </span>
-                <div className="about-card-name">{f.name}</div>
-                <div className="about-card-role">Co-Founder</div>
+                <div className="about-portrait-wrap">
+                  <img
+                    className="about-portrait"
+                    src={f.image}
+                    alt={`${f.name}, Co-Founder of Anchor Point`}
+                    width={1122}
+                    height={1402}
+                    loading="lazy"
+                  />
+                </div>
+                <div className="about-card-body">
+                  <div className="about-card-name">{f.name}</div>
+                  <div className="about-card-role">Co-Founder</div>
+                </div>
               </article>
             ))}
           </div>
