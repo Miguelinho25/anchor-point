@@ -1,10 +1,9 @@
-# Anchor Point — Cross-Device Handoff
+# Anchor Point - Cross-Device Handoff
 
-> **Latest status: 2026-06-23, end of laptop/Codex session.**
-> The accepted code baseline is `3c291b4`, which contains the approved CH00 WebGL water foundation plus the ripple-quality hotfix.
-> This handoff itself may be a newer docs-only commit on `master`.
-> Before this handoff update, the local branch was `ch01-underwater-transition`, clean, pointing at the same code commit as `master`.
-> The local dev server was stopped; port `3000` was confirmed clear.
+> Latest status: 2026-06-24, end of laptop/Codex session.
+> Current accepted baseline: `master` at `3ad4e8747aafe5b53ea196ea75752e8b304463c9`
+> Commit: `Add WebGL water backdrop to static pages`
+> Remote: `origin/master` is synced to this commit.
 
 This file is the first thing a fresh Claude/Codex should read before touching the project.
 
@@ -12,22 +11,23 @@ This file is the first thing a fresh Claude/Codex should read before touching th
 
 ## 0. Current State In One Paragraph
 
-Anchor Point is a premium dark maritime-intelligence website with a cinematic CH00-CH05 homepage, a restrained site shell, functioning placeholder routes, an About page, an isolated `/water-lab`, and the approved CH00 WebGL water surface now merged into `master`. The accepted homepage starts with a dark physical WebGL water surface, faint vessel/data particles, then proceeds through the existing cinematic narrative into AnchorVoyage, Anchor AI, and the final Anchor Point operating-system reveal. The most recent accepted code is the water ripple quality hotfix at `3c291b4`. A first CH00 -> CH01 underwater-transition attempt was tried on `ch01-underwater-transition`, rejected, and fully reverted; do not restart it until the user gives a new prompt.
+Anchor Point is now a premium dark maritime-intelligence website with a cinematic CH00-CH05 homepage, a restrained site shell, functional product/contact/about routes, founder portraits on About, the approved CH00 WebGL water foundation, the isolated `/water-lab` experiment, and the same full-strength CH00-style WebGL water backdrop applied to static pages. The current master baseline is stable, built successfully, pushed to GitHub, and visually approved through the static-page water backdrop milestone.
 
 ---
 
-## 1. Hard Rules
+## 1. Absolute Rules
 
 - Do not work directly on `master` unless the user explicitly asks for a merge or a tiny approved hotfix.
-- Do not commit, push, or merge until the user visually approves.
+- Start new work from latest `master` on a feature branch.
+- Do not commit, push, or merge until the user visually approves, unless the user explicitly asks for a checkpoint.
 - Do not delete feature branches unless the user explicitly asks.
 - Do not install packages unless the user explicitly approves.
 - Do not add Framer Motion, Motion, Spline, or new animation libraries.
-- Do not copy Evan Wallace WebGL Water source code. The water work must remain original implementation inspired only by general heightfield concepts.
+- Do not copy Evan Wallace WebGL Water source code. The current water implementation is original and only conceptually inspired by heightfield water ideas.
 - Do not invent fake clients, metrics, testimonials, dashboards, product claims, or media.
 - Do not redesign CH00-CH05 casually. The film is the hero experience.
-- Keep `/water-lab` available as the isolated water experiment.
-- Keep the approved CH00 WebGL water on `master` intact unless the user gives a specific prompt.
+- Keep `/water-lab` available as an isolated internal experiment. Do not add it to nav.
+- Keep the approved CH00 WebGL water and static-page water backdrop intact unless the user gives a specific prompt.
 
 ---
 
@@ -39,33 +39,37 @@ Remote:
 https://github.com/Miguelinho25/anchor-point.git
 ```
 
-Current important commits:
+Current accepted master:
+
+```text
+branch: master
+HEAD: 3ad4e8747aafe5b53ea196ea75752e8b304463c9
+short: 3ad4e87 Add WebGL water backdrop to static pages
+status: pushed to origin/master
+```
+
+Important commits:
 
 | Commit | Status | Meaning |
 |---|---|---|
-| `3c291b4` | `master`, pushed | Improve WebGL water ripple quality |
+| `3ad4e87` | `master`, pushed | Add WebGL water backdrop to static pages |
+| `6f6adcc` | merged | Add founder portraits to About page |
+| `3c291b4` | merged | Improve WebGL water ripple quality |
 | `13f8168` | merged | Test WebGL water integration in CH00 |
 | `81408a1` | merged | Add isolated water-lab WebGL water experiment |
-| `5a78a8e` | merged | Clarify Mont-Fort standard and creative North Star |
 | `f030a25` | merged | Add About page and founder section |
 | `dc3f89a` | merged | Build site shell navigation and CTA |
 | `37918cf` | merged | Apply Phase 2 Mont-Fort restraint polish |
 | `b4752f0` | merged | Apply Phase 1 Mont-Fort restraint polish |
 
-Project state immediately before this handoff docs update:
+Branches to know:
 
-```text
-branch: ch01-underwater-transition
-working tree: clean
-HEAD: 3c291b4
-dev server: stopped
-port 3000: clear
-```
-
-Important branch note:
-
-- `ch01-underwater-transition` currently contains no unique committed work. It was created from latest `master`, used for a rejected attempt, then restored clean.
-- Keep it or discard it later only if the user asks. For a fresh new attempt, it is usually safer to create a new branch from `master`.
+| Branch | Meaning |
+|---|---|
+| `static-pages-water-backdrop` | Approved and merged into `master`; keep branch unless user asks to delete |
+| `water-project-CODEX` | Earlier CH00 water integration branch; merged through water commits |
+| `ch01-underwater-transition` | Rejected attempt branch; reverted clean, do not continue without new prompt |
+| `water-ripple-quality-hotfix` | Ripple-quality hotfix branch; merged |
 
 To resume safely:
 
@@ -77,9 +81,11 @@ npm install
 npm run dev
 ```
 
-Start new work from a fresh branch:
+For new work:
 
 ```bash
+git checkout master
+git pull origin master
 git checkout -b <new-feature-branch>
 ```
 
@@ -94,11 +100,13 @@ The homepage remains the core product experience:
 | Chapter | Current role |
 |---|---|
 | CH00 | Dark physical WebGL ocean surface + faint vessel/data particles + opening copy |
-| CH01 | The world organizes into maritime intelligence; statement: "The intelligence layer for global shipping." |
+| CH01 | World begins organizing into maritime intelligence; statement: "The intelligence layer for global shipping." |
 | CH02 | Fragmented maritime data converges around one vessel |
 | CH03 | AnchorVoyage module reveal |
 | CH04 | Anchor AI live intelligence layer |
 | CH05 | Anchor Point parent operating-system reveal |
+
+Do not weaken CH05. It remains the first dominant "ANCHOR POINT" climax.
 
 ### Site Shell
 
@@ -112,56 +120,78 @@ Merged and working:
 - `/contact`
 - `/about`
 
-The `About` page is approved as the current base. It introduces Anchor Point as founded by three university-student co-founders:
+### About Page
 
-- Miguel Morett
-- Argenis Omaña
-- Ansh Sahadew
+Approved base:
 
-Do not add photos or rewrite the About page unless asked. Real photos and copy refinement are future work.
+- Premium dark About page
+- Founder section
+- Founder portraits approved and merged
+- Co-founders:
+  - Miguel Morett
+  - Argenis Omana
+  - Ansh Sahadew
 
-### Water Work
+Do not replace portraits, rewrite bios, or invent job titles unless asked.
 
-Merged and working:
+### Static Pages With Water Backdrop
 
-- Hidden `/water-lab` route.
-- Original WebGL heightfield water experiment.
-- CH00 integration using the WebGL water as the primary dark ocean foundation.
-- Fallback/static ocean base retained.
-- Ripple quality hotfix merged into `master`.
+Approved and merged in `3ad4e87`:
 
-`/water-lab` remains available and should not be added to nav.
+- `/anchor-voyage`
+- `/anchor-ai`
+- `/about`
+- `/contact`
+
+These pages now use the same CH00-style WebGL water background behavior:
+
+- full-strength dark WebGL water presence
+- idle movement visible
+- mouse ripple interaction visible
+- dark ocean tone
+- content remains readable
+- About portraits remain clean/readable
+
+Implementation summary:
+
+- `components/site/StaticWaterBackdrop.tsx` mounts the static-page water only on static routes.
+- `app/layout.tsx` renders the static water backdrop globally but route-gates it internally.
+- `app/globals.css` contains the shared shell/static backdrop styling and static-page background adjustments.
+- Homepage CH00 remains handled by `components/site/OceanBackdrop.tsx`.
+- `/water-lab` remains isolated.
 
 ---
 
-## 4. Water Implementation Notes
+## 4. Water System Notes
 
 Key files:
 
 | File | Role |
 |---|---|
-| `components/experimental/WaterSurface.tsx` | Self-contained original WebGL water component used by `/water-lab` and CH00 backdrop mode |
-| `app/water-lab/page.tsx` | Hidden isolated test route |
+| `components/experimental/WaterSurface.tsx` | Original reusable WebGL water component |
+| `app/water-lab/page.tsx` | Hidden isolated water experiment route |
 | `components/site/OceanBackdrop.tsx` | Homepage CH00 water/backdrop layering and fallback |
+| `components/site/StaticWaterBackdrop.tsx` | Static-page water backdrop wrapper |
 | `components/Stage/Stage.tsx` | Existing cinematic vessel/route WebGL stage |
 
-Important accepted behavior:
+Accepted behavior:
 
-- CH00 water should feel dark, physical, premium, and restrained.
-- Mouse interaction should feel like local disturbance on the same water surface.
-- No bright pool look.
+- CH00 water is dark, physical, premium, and restrained.
+- Mouse interaction feels like local disturbance on a physical surface.
+- Idle water is alive without becoming bright.
+- No pool-demo look.
 - No toy ripple look.
-- No global cursor parallax/wake. That earlier cursor experiment was rejected and must not return.
-- CH00 particles should remain faint but visible.
+- No global cursor parallax/wake.
+- CH00 particles remain faint but visible.
 - Opening text remains dominant and readable.
-- `/water-lab` remains visually separate for testing.
+- Static pages use the same approved water feel, not a faint decorative variant.
+- `/water-lab` stays visually separate and internal.
 
-Ripple quality hotfix at `3c291b4`:
+Fallback principles:
 
-- Increased sim resolution for the lab/backdrop.
-- Increased pixel ratio modestly.
-- Smoothed the water normal calculation so mouse ripples no longer look chunky/pixelated.
-- Build passed before merge.
+- If WebGL/reduced-motion/unsupported device is an issue, fall back to a dark ocean/base layer.
+- Avoid blank CH00 or blank static pages.
+- Avoid multiple unnecessary active canvases on one page.
 
 ---
 
@@ -173,7 +203,7 @@ An earlier cursor/wake experiment before the WebGL water was rejected because it
 
 ### Rejected: Final Shader Unification Tweak
 
-A shader tweak intended to unify ambient lighting and ripple normals made the water worse and pixelated. It was reverted before merging the CH00 water integration. The accepted baseline is `13f8168`, followed by the approved quality hotfix `3c291b4`.
+A shader tweak intended to unify ambient lighting and ripple normals made the water worse and pixelated. It was reverted. The accepted water path is the CH00 integration plus the later ripple-quality hotfix.
 
 ### Rejected: CH00 -> CH01 Underwater Transition Attempt
 
@@ -182,14 +212,6 @@ Branch used:
 ```text
 ch01-underwater-transition
 ```
-
-What was attempted:
-
-- CH00 water receding upward during scroll.
-- DOM underwater fog/volume overlay.
-- Stage particle/current changes.
-- Shared pointer signal from WaterSurface to Stage.
-- CH01 routes/particles reframed as underwater currents.
 
 Why user rejected it:
 
@@ -206,147 +228,94 @@ Action already taken:
 git restore app/globals.css app/page.tsx components/Stage/Stage.tsx components/experimental/WaterSurface.tsx components/site/OceanBackdrop.tsx lib/scrollStore.ts
 ```
 
-Result:
-
-```text
-working tree clean
-```
-
-Do not make a new CH01 underwater attempt until the user gives a new prompt.
+Do not make a new CH01 underwater attempt until the user gives a new prompt and a new direction.
 
 ---
 
 ## 6. Mont-Fort Standard And Creative North Star
 
-Mont-Fort is the standard for quality, restraint, production value, and cinematic craft.
+Mont-Fort is the quality standard for restraint, production value, cinematic craft, and polish.
 
 Critical distinction:
 
-- Mont-Fort is **not** the visual template.
-- Anchor Point must keep its current identity: dark abyss/navy palette, instrument-blue restraint, cinematic maritime intelligence mood, current typography direction.
-- We are trying to reach Mont-Fort's level of craft while staying in Anchor Point's own world.
+- Mont-Fort is not the visual template.
+- Anchor Point must keep its own identity: dark abyss/navy palette, restrained instrument-blue accents, premium maritime intelligence mood, and current cinematic typography direction.
+- The goal is to reach Mont-Fort's level of craft while staying inside Anchor Point's world.
 
-The user's direction:
+User direction:
 
 - The current Anchor Point vibe, colors, and dark identity are correct.
 - Future upgrades should use real media, 3D objects, and physical interactive surfaces to raise production value.
-- The CH00 water project is step one of making the site feel more real and physical.
-- Add by substitution: each new real/premium element should replace an abstract weaker element, not pile on top.
+- The CH00 water project is step one toward making the site feel more real and physical.
+- Add by substitution: each new real/premium element should replace a weaker abstract element, not pile on top.
 - Avoid a showreel of effects. Everything must feel like one serene world.
 
-Highest-leverage future moves:
+Likely future high-leverage moves:
 
 1. Real cinematic vessel/sea shot or video for CH03/AnchorVoyage reveal.
-2. Carefully authored transitions between chapters.
-3. More physical surfaces and 3D/media by substitution.
-4. Continued restraint: remove anything that looks HUD-like, generic, graph-like, or gimmicky.
+2. A better-planned CH00 -> CH01 underwater transition, but only after a fresh plan.
+3. More authored inter-chapter transitions.
+4. Selective 3D/physical assets where they deepen the maritime world.
 
 ---
 
-## 7. Tech Stack
+## 7. Verification Checklist For Fresh Agent
 
-- Next.js 16 App Router
-- React
-- TypeScript
-- GSAP + ScrollTrigger
-- Lenis
-- Three.js raw WebGL
-- Tailwind CSS 4
-- `next/font/google` using Josefin Sans and Inter
-
-No new animation libraries.
-
-Key architecture:
-
-- `app/page.tsx`: CH00-CH05 DOM and ScrollTrigger orchestration.
-- `components/Stage/Stage.tsx`: main persistent WebGL vessel/route scene.
-- `components/experimental/WaterSurface.tsx`: separate water WebGL component.
-- `components/site/OceanBackdrop.tsx`: CH00 water/fallback layer.
-- `lib/scrollStore.ts`: DOM to WebGL progress singleton.
-- `components/providers/LenisProvider.tsx`: smooth scroll.
-
-Three.js note:
-
-- Use `THREE.Timer`, not `THREE.Clock`.
-
-Font/CSS note:
-
-- For Inter, use literal family first:
-
-```css
-font-family: "Inter", var(--font-ui), system-ui, sans-serif;
-```
-
-Using only `var(--font-ui)` can be dropped by the build pipeline.
-
----
-
-## 8. Known Pitfalls
-
-### Stale Turbopack CSS
-
-After git checkout/merge while a dev server is running, Turbopack can serve stale CSS. If header/footer/CTA appears as raw unstyled text after a branch switch, do not assume the CSS is broken.
-
-Fix:
+Run:
 
 ```bash
-rm -rf .next
-npm run dev
-```
-
-### Next Font Network Build Failure
-
-`npm run build` can fail transiently while fetching Google font files. If the code did not change fonts and the error is a network/font fetch, retry once. This happened during the rejected CH01 attempt; the retry passed.
-
-### Browser Scroll Verification
-
-Lenis/GSAP scroll can be awkward in automated browser checks. Screenshots at top are reliable. Mid-scroll checks may require real visual review by the user. Use browser DOM/computed checks only as smoke tests; the user judges cinematic motion visually.
-
-### Server State
-
-At handoff time the dev server is stopped. If port `3000` is busy later:
-
-```bash
-lsof -tiTCP:3000 -sTCP:LISTEN | xargs -r kill
-npm run dev
-```
-
----
-
-## 9. Verification Baseline
-
-Before starting new work, a fresh agent should verify:
-
-```bash
-git status --short --branch
 npm run build
 npm run dev
 ```
 
-Routes that should exist:
+Check:
 
 - `/`
-- `/about`
-- `/anchor-ai`
-- `/anchor-voyage`
-- `/contact`
+  - CH00 WebGL water loads cleanly.
+  - CH00 text is readable.
+  - CH00 particles are faint but visible.
+  - CH01-CH05 scroll correctly.
 - `/water-lab`
+  - Isolated water experiment still works.
+  - Mouse ripples remain smooth.
+- `/anchor-voyage`
+  - Full-strength CH00-style water backdrop visible.
+  - Mouse ripple visible.
+  - Text readable.
+- `/anchor-ai`
+  - Same as AnchorVoyage.
+- `/about`
+  - Full-strength water backdrop visible.
+  - Founder portraits visible/readable.
+  - Cards/content remain clear.
+- `/contact`
+  - Full-strength water backdrop visible.
+  - Contact content readable.
 
-Visual baseline:
+Expected build:
 
-- CH00 WebGL water loads without old background flash.
-- CH00 water is dark and alive at idle.
-- Mouse ripple quality is smooth, not pixelated.
-- CH00 particles are faint but visible.
-- CH01-CH05 still follow the accepted cinematic narrative.
-- `/water-lab` still works.
+- Next.js build passes.
+- TypeScript passes.
+- Routes generated:
+  - `/`
+  - `/about`
+  - `/anchor-ai`
+  - `/anchor-voyage`
+  - `/contact`
+  - `/water-lab`
 
 ---
 
-## 10. Recommended Next Step
+## 8. Next-Agent Advice
 
-Do nothing until the user gives the next prompt.
+Before changing code:
 
-If the user returns to the CH00 -> CH01 underwater idea, do not revive the rejected approach. The next attempt needs a different concept, probably more cinematic/media-driven or camera/scene-based, not a DOM fog overlay plus route-current treatment. The user wants an actual premium underwater-world feeling, not obvious graph currents.
+1. Read this file.
+2. Run `git status`.
+3. Confirm current branch.
+4. Pull latest `master`.
+5. Create a new feature branch.
+6. Keep visual changes isolated and reversible.
+7. Do not touch the water system, Stage, or scroll architecture unless the user prompt specifically asks.
 
-If asked to start, create a fresh feature branch from `master`, inspect the current baseline, and plan before coding.
+If the user asks for the next cinematic agenda item, plan first. The project is now strong enough that careless effects will make it worse, not better.

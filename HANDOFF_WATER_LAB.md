@@ -1,7 +1,7 @@
 # Handoff — WebGL Water System
 
-> **Status updated 2026-06-23.**
-> This file used to be the plan for the Evan Wallace-inspired water POC. That POC is now implemented, visually approved, merged into `master`, and quality-hotfixed.
+> **Status updated 2026-06-24.**
+> This file used to be the plan for the Evan Wallace-inspired water POC. That POC is now implemented, visually approved, merged into `master`, quality-hotfixed, and reused for the approved static-page water backdrop.
 > Read `HANDOFF.md` first; it is the source of truth for current project state.
 
 ---
@@ -15,6 +15,7 @@ Shipped:
 - Hidden `/water-lab` route.
 - Original dark heightfield-style WebGL water experiment.
 - CH00 homepage integration using the WebGL water as the primary ocean foundation.
+- Static-page integration using the same CH00-style water backdrop on `/anchor-voyage`, `/anchor-ai`, `/about`, and `/contact`.
 - Static/living ocean base retained as fallback/revert path.
 - Ripple quality hotfix merged into `master`.
 
@@ -25,6 +26,7 @@ Important commits:
 | `81408a1` | Add isolated water-lab WebGL water experiment |
 | `13f8168` | Test WebGL water integration in CH00 |
 | `3c291b4` | Improve WebGL water ripple quality |
+| `3ad4e87` | Add WebGL water backdrop to static pages |
 
 `master` currently includes all of the above.
 
@@ -43,6 +45,7 @@ The accepted CH00 direction:
 - Opening text remains readable.
 - Faint CH00 particles remain visible.
 - `/water-lab` stays isolated for testing and is not linked in nav.
+- Static pages use the same approved CH00-style water strength and mouse response, not a faint decorative variant.
 
 The accepted quality hotfix:
 
@@ -60,6 +63,7 @@ The accepted quality hotfix:
 | `app/water-lab/page.tsx` | Hidden internal test page |
 | `components/experimental/WaterSurface.tsx` | Self-contained original WebGL water component |
 | `components/site/OceanBackdrop.tsx` | CH00 homepage water layering and fallback |
+| `components/site/StaticWaterBackdrop.tsx` | Static-page water backdrop wrapper |
 | `components/Stage/Stage.tsx` | Existing vessel/route particle field; touched during CH00 integration to keep CH00 particles faint but visible |
 
 Do not delete `/water-lab`.
@@ -115,6 +119,10 @@ Then check:
 
 - `http://localhost:3000/`
 - `http://localhost:3000/water-lab`
+- `http://localhost:3000/anchor-voyage`
+- `http://localhost:3000/anchor-ai`
+- `http://localhost:3000/about`
+- `http://localhost:3000/contact`
 
 Expected:
 
@@ -123,6 +131,7 @@ Expected:
 - Idle water is alive.
 - Mouse ripples are smooth, not pixelated.
 - `/water-lab` still shows the internal water experiment.
+- Static pages show the CH00-style WebGL water backdrop and visible mouse ripple.
 - CH01-CH05 still scroll normally.
 
 ---

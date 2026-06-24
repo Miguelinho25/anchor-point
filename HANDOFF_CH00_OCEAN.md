@@ -1,17 +1,24 @@
-# Handoff — CH00 Ocean Atmosphere (DONE / merged)
+# Handoff - CH00 Ocean Atmosphere (HISTORICAL / superseded)
 
-> Record of the CH00 living-ocean step. For broader project context read **`HANDOFF.md`** first.
-> Updated 2026-06-23.
+> Historical record of the older CH00 living-still ocean step.
+> Updated 2026-06-24.
+> For current project state read **`HANDOFF.md`** first. The current approved CH00 foundation is now the WebGL water system, not only this older living-still ocean.
 
 ## TL;DR
 
-CH00 (the dark-sea opening) now has a **living, media-driven ocean** backdrop. It is **complete,
-approved, and merged to `master`** (`3519925`). Everything lives in one isolated component —
-**`components/site/OceanBackdrop.tsx`** — plus one asset and 3 lines in `app/layout.tsx`. Fully
-additive and reversible; no chapter code, no `Stage.tsx`, no scroll architecture, no new packages.
+This file documents the earlier **living-still ocean** implementation that shipped before the
+current WebGL water system. It remains useful as history and fallback context, but it is no longer
+the latest CH00 baseline.
 
-**There is no pending review and no open branch work for CH00.** A cursor-wake interaction was
-tried and rejected (see below) — the shipped state is the **living-still ocean only**.
+Current accepted state is documented in `HANDOFF.md` and `HANDOFF_WATER_LAB.md`:
+
+- CH00 uses approved dark WebGL water as the primary foundation.
+- `/water-lab` remains the isolated water experiment.
+- Static pages now use the CH00-style WebGL water backdrop.
+- The old living-still ocean remains relevant as fallback/revert history.
+
+Important distinction: the rejected interaction in this file was the old poster-like cursor wake.
+It is not the same as the later approved WebGL water ripple interaction.
 
 ## What shipped (on `master`)
 
