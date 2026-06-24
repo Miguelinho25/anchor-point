@@ -4,6 +4,7 @@ import './globals.css'
 import LenisProvider from '@/components/providers/LenisProvider'
 import Stage from '@/components/Stage/Stage'
 import OceanBackdrop from '@/components/site/OceanBackdrop'
+import StaticWaterBackdrop from '@/components/site/StaticWaterBackdrop'
 import Header from '@/components/site/Header'
 import Footer from '@/components/site/Footer'
 
@@ -40,6 +41,8 @@ export default function RootLayout({
         <LenisProvider>
           {/* CH00 ocean-atmosphere (Step 0) — static still behind the canvas; homepage + CH00 only */}
           <OceanBackdrop />
+          {/* Static route water test — route-gated; homepage CH00 water remains owned by OceanBackdrop. */}
+          <StaticWaterBackdrop />
           {/* WebGL canvas — fixed behind everything, persists across route changes */}
           <Stage />
           {/* Site shell — fixed header floats above; footer closes every route. */}
